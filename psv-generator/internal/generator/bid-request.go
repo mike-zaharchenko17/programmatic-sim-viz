@@ -2,6 +2,8 @@ package generator
 
 import (
 	"context"
+	"encoding/json"
+	"fmt"
 	"math/rand"
 	"psv-generator/internal/utils"
 )
@@ -68,6 +70,19 @@ func BidRequestProducer(ctx context.Context, bidRequestChan chan *BidRequest) {
 		case <-ctx.Done():
 			return
 		case bidRequestChan <- generateBidRequest():
+		}
+	}
+}
+
+func BidRequestConsumer(ctx context.Context, bidRequestChan chan *BidRequest) {
+	var x *BidRequest
+	for {
+		select {
+		case <-ctx.Done():
+			return
+		case x = <-bidRequestChan:
+			data, _ := json.MarshalIndent(&x, "", "   ")
+			fmt.Println(string(data))
 		}
 	}
 }
