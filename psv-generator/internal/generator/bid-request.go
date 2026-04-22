@@ -1,6 +1,7 @@
 package generator
 
 import (
+	"context"
 	"math/rand"
 	"psv-generator/internal/utils"
 )
@@ -61,6 +62,12 @@ func generateBidRequest() *BidRequest {
 	}
 }
 
-func BidRequestProducer(bidRequestChan chan BidRequest) any {
-	return nil
+func BidRequestProducer(ctx context.Context, bidRequestChan chan *BidRequest) {
+	for {
+		select {
+		case <-ctx.Done():
+			return
+		case bidRequestChan <- generateBidRequest():
+		}
+	}
 }
