@@ -6,6 +6,8 @@ import (
 	"fmt"
 	"math/rand"
 	"psv-generator/internal/utils"
+	"sync"
+	"time"
 )
 
 func generateBidRequest() *BidRequest {
@@ -64,21 +66,25 @@ func generateBidRequest() *BidRequest {
 	}
 }
 
-func BidRequestProducer(ctx context.Context, bidRequestChan chan *BidRequest) {
+func BidRequestProducer(ctx context.Context, bidRequestChan chan *BidRequest, wg *sync.WaitGroup) {
 	for {
 		select {
 		case <-ctx.Done():
+			wg.Done()
+			close(bidRequestChan)
 			return
 		case bidRequestChan <- generateBidRequest():
+			time.Sleep(time.Second)
 		}
 	}
 }
 
-func BidRequestConsumer(ctx context.Context, bidRequestChan chan *BidRequest) {
+func BidRequestConsumer(ctx context.Context, bidRequestChan chan *BidRequest, wg *sync.WaitGroup) {
 	var x *BidRequest
 	for {
 		select {
 		case <-ctx.Done():
+			wg.Done()
 			return
 		case x = <-bidRequestChan:
 			data, _ := json.MarshalIndent(&x, "", "   ")
