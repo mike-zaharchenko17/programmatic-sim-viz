@@ -1,5 +1,5 @@
 package utils
 
-func IntPtr(n int) *int {
-	return &n
+func ToPtr[T any](t T) *T {
+	return &t
 }

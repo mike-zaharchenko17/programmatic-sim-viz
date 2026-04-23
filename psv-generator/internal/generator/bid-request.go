@@ -49,7 +49,7 @@ func generateBidRequest() *BidRequest {
 		Imp: []Imp{{
 			ID:       "1",
 			Bidfloor: PickOne(BidFloors),
-			Banner:   &Banner{W: utils.IntPtr(300), H: utils.IntPtr(300)},
+			Banner:   &Banner{W: utils.ToPtr(300), H: utils.ToPtr(300)},
 		}},
 		Site: site,
 		App:  app,
