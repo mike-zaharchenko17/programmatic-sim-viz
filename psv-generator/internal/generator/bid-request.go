@@ -1,16 +1,11 @@
 package generator
 
 import (
-	"context"
-	"encoding/json"
-	"fmt"
 	"math/rand"
 	"psv-generator/internal/utils"
-	"sync"
-	"time"
 )
 
-func generateBidRequest() *BidRequest {
+func GenerateBidRequest() *BidRequest {
 	isApp := rand.Float32() < 0.30
 
 	var site *Site
@@ -63,32 +58,5 @@ func generateBidRequest() *BidRequest {
 		},
 		User: &User{ID: GenIFA()},
 		At:   2,
-	}
-}
-
-func BidRequestProducer(ctx context.Context, bidRequestChan chan *BidRequest, wg *sync.WaitGroup) {
-	for {
-		select {
-		case <-ctx.Done():
-			wg.Done()
-			close(bidRequestChan)
-			return
-		case bidRequestChan <- generateBidRequest():
-			time.Sleep(time.Second)
-		}
-	}
-}
-
-func BidRequestConsumer(ctx context.Context, bidRequestChan chan *BidRequest, wg *sync.WaitGroup) {
-	var x *BidRequest
-	for {
-		select {
-		case <-ctx.Done():
-			wg.Done()
-			return
-		case x = <-bidRequestChan:
-			data, _ := json.MarshalIndent(&x, "", "   ")
-			fmt.Println(string(data))
-		}
 	}
 }
