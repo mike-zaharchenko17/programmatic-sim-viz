@@ -8,8 +8,10 @@ func generateBidResponses(bidRequest *BidRequest) []*BidResponse {
 
 	// every seat has a chance to bid
 	for _, seat := range Seats {
-		// 0.4 pr of not bidding
-		if rand.Float32() > 0.6 {
+		// 0.25 pr of not bidding
+		// in a truer to life sim, we would return a BidResponse
+		// with a nbr code, but instead we omit to keep things lean
+		if rand.Float32() > 0.75 {
 			continue
 		}
 
