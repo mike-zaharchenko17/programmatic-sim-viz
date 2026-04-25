@@ -1,5 +1,7 @@
 package generator
 
+import "time"
+
 // BidRequest is the top-level object for an auction request
 type BidRequest struct {
 	ID     string  `json:"id"`
@@ -108,4 +110,17 @@ type Bid struct {
 	CrID    string   `json:"crid,omitempty"`
 	W       *int     `json:"w,omitempty"`
 	H       *int     `json:"h,omitempty"`
+}
+
+type LossRecord struct {
+	Bid        *Bid `json:"bid"`
+	LossReason int  `json:"loss_reason"`
+}
+
+type AuctionResult struct {
+	RequestID     string       `json:"request_id"`
+	Timestamp     time.Time    `json:"timestamp"`
+	Winner        *Bid         `json:"winner,omitempty"`
+	ClearingPrice float64      `json:"clearing_price"`
+	Losers        []LossRecord `json:"losers,omitempty"`
 }
