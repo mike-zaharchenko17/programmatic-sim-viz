@@ -5,7 +5,7 @@ import (
 	"psv-generator/internal/utils"
 )
 
-func GenerateBidRequest() *BidRequest {
+func generateBidRequest() *BidRequest {
 	isApp := rand.Float32() < 0.30
 
 	var site *Site

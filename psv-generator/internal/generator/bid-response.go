@@ -2,7 +2,7 @@ package generator
 
 import "math/rand"
 
-func GenerateBidResponses(bidRequest *BidRequest) []*BidResponse {
+func generateBidResponses(bidRequest *BidRequest) []*BidResponse {
 
 	var responses []*BidResponse
 

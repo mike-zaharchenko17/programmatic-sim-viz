@@ -15,7 +15,7 @@ func BidRequestProducer(ctx context.Context, bidRequestChan chan *BidRequest, wg
 			wg.Done()
 			close(bidRequestChan)
 			return
-		case bidRequestChan <- GenerateBidRequest():
+		case bidRequestChan <- generateBidRequest():
 			time.Sleep(time.Second)
 		}
 	}
@@ -32,7 +32,7 @@ func BidRequestResponsePipe(ctx context.Context, bidRequestChan chan *BidRequest
 		case x = <-bidRequestChan:
 			data, _ := json.MarshalIndent(&x, "", "   ")
 			fmt.Println("Received data on bidRequestChannel:\n" + string(data))
-			bidResponseChan <- GenerateBidResponses(x)
+			bidResponseChan <- generateBidResponses(x)
 		}
 	}
 }
