@@ -4,7 +4,6 @@ import (
 	"context"
 	"encoding/json"
 	"fmt"
-	"strconv"
 	"sync"
 	"time"
 )
@@ -48,12 +47,12 @@ func BidResponseConsumer(ctx context.Context, bidResponseChan chan []*BidRespons
 			return
 		case resArray = <-bidResponseChan:
 			data, _ := json.MarshalIndent(&resArray, "", "  ")
-			fmt.Println("Received data on bidResponseChannel:\n" + string(data))
-			winner := simulateAuction(resArray)
-			fmt.Printf("WINNER: %s\n", winner.CID)
+			fmt.Printf("Received data on bidResponseChannel:\n%s\n", string(data))
 
-			winnerPrice := strconv.FormatFloat(winner.Price, 'E', -1, 64)
-			fmt.Printf("AT PRICE: %s\n", winnerPrice)
+			auctionResult := simulateAuction(resArray)
+
+			auctionResultData, _ := json.MarshalIndent(&auctionResult, "", " ")
+			fmt.Printf("Auction Result: %s\n", auctionResultData)
 		}
 	}
 }
