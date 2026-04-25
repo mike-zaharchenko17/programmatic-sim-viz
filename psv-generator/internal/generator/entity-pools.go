@@ -3,7 +3,26 @@ package generator
 import (
 	"fmt"
 	"math/rand"
+
+	"github.com/google/uuid"
 )
+
+var CampaignsBySeat map[string][]CampaignPool
+var Seats []SeatPool
+
+func init() {
+	CampaignsBySeat = make(map[string][]CampaignPool)
+	for _, c := range Campaigns {
+		CampaignsBySeat[c.Seat] = append(CampaignsBySeat[c.Seat], c)
+	}
+
+	for seat, campaigns := range CampaignsBySeat {
+		Seats = append(Seats, SeatPool{
+			Seat:      seat,
+			Campaigns: campaigns,
+		})
+	}
+}
 
 // Entity Pools
 type PublisherPool struct {
@@ -26,6 +45,11 @@ type CampaignPool struct {
 	CID     string
 	Seat    string
 	Adomain string
+}
+
+type SeatPool struct {
+	Seat      string
+	Campaigns []CampaignPool
 }
 
 // Pool Data
@@ -141,4 +165,9 @@ func GenIFA() string {
 	return fmt.Sprintf("%08x-%04x-%04x-%04x-%012x",
 		rand.Uint32(), rand.Intn(0xFFFF), rand.Intn(0xFFFF),
 		rand.Intn(0xFFFF), rand.Int63n(0xFFFFFFFFFFFF))
+}
+
+func GenUUID() string {
+	uuidAsString := uuid.NewString()
+	return uuidAsString
 }
