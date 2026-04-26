@@ -37,7 +37,7 @@ func BidRequestResponsePipe(ctx context.Context, bidRequestChan chan *BidRequest
 	}
 }
 
-func BidResponseConsumer(ctx context.Context, bidResponseChan chan []*BidResponse, wg *sync.WaitGroup) {
+func BidResponseConsumer(ctx context.Context, bidResponseChan chan []*BidResponse, auctionResultChan chan AuctionResult, wg *sync.WaitGroup) {
 	var resArray []*BidResponse
 
 	for {
@@ -50,6 +50,8 @@ func BidResponseConsumer(ctx context.Context, bidResponseChan chan []*BidRespons
 			fmt.Printf("Received data on bidResponseChannel:\n%s\n", string(data))
 
 			auctionResult := simulateAuction(resArray)
+
+			auctionResultChan <- auctionResult
 
 			auctionResultData, _ := json.MarshalIndent(&auctionResult, "", " ")
 			fmt.Printf("Auction Result: %s\n", auctionResultData)

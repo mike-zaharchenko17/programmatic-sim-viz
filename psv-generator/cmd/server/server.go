@@ -12,6 +12,7 @@ func RunPipeline() {
 
 	bidRequestChan := make(chan *generator.BidRequest)
 	bidResponseChan := make(chan []*generator.BidResponse)
+	auctionResultChan := make(chan generator.AuctionResult)
 
 	wg := sync.WaitGroup{}
 
@@ -19,7 +20,7 @@ func RunPipeline() {
 
 	go generator.BidRequestProducer(ctx, bidRequestChan, &wg)
 	go generator.BidRequestResponsePipe(ctx, bidRequestChan, bidResponseChan, &wg)
-	go generator.BidResponseConsumer(ctx, bidResponseChan, &wg)
+	go generator.BidResponseConsumer(ctx, bidResponseChan, auctionResultChan, &wg)
 
 	go func() {
 		time.Sleep(time.Second * 10)
