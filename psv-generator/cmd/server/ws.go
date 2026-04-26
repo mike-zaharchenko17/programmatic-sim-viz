@@ -42,21 +42,43 @@ func WsHandlerWithHub(hub *BroadcastHub) echo.HandlerFunc {
 			return nil
 		}
 
+		done := make(chan struct{})
 		clientCh := make(chan generator.AuctionResult, 10)
 
-		defer ws.Close()
-
 		hub.Subscribe(clientCh)
-		defer hub.Unsubscribe(clientCh)
 
-		for auctionRes := range clientCh {
-			data, _ := json.Marshal(auctionRes)
+		// handle cleanup
+		defer func() {
+			hub.Unsubscribe(clientCh)
+			ws.Close()
+		}()
 
-			if err := ws.WriteMessage(websocket.TextMessage, data); err != nil {
-				return err
+		// read pump
+		go func() {
+			defer close(done)
+			for {
+				_, _, err := ws.ReadMessage()
+				if err != nil {
+					return
+				}
+			}
+		}()
+
+		// write pump
+		for {
+			select {
+			case <-done:
+				// handle client disconnect
+				return nil
+			case auctionRes, ok := <-clientCh:
+				if !ok {
+					return nil
+				}
+				data, _ := json.Marshal(auctionRes)
+				if err := ws.WriteMessage(websocket.TextMessage, data); err != nil {
+					return err
+				}
 			}
 		}
-
-		return nil
 	}
 }
