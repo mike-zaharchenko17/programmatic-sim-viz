@@ -2,7 +2,6 @@ package server
 
 import (
 	"context"
-	"fmt"
 
 	"github.com/gorilla/websocket"
 	"github.com/labstack/echo/v5"
@@ -27,13 +26,6 @@ func hello(c *echo.Context) error {
 		if err != nil {
 			c.Logger().Error("failed to write WS message", "error", err)
 		}
-
-		// Read
-		_, msg, err := ws.ReadMessage()
-		if err != nil {
-			c.Logger().Error("failed to read WS message", "error", err)
-		}
-		fmt.Printf("%s\n", msg)
 	}
 }
 
