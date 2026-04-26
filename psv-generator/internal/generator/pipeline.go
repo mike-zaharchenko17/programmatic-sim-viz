@@ -51,10 +51,15 @@ func BidResponseConsumer(ctx context.Context, bidResponseChan chan []*BidRespons
 
 			auctionResult := simulateAuction(resArray)
 
-			auctionResultChan <- auctionResult
-
-			auctionResultData, _ := json.MarshalIndent(&auctionResult, "", " ")
-			fmt.Printf("Auction Result: %s\n", auctionResultData)
+			// gracefully log and discard if nothing is listening (i.e., ws not open)
+			select {
+			case auctionResultChan <- auctionResult:
+				auctionResultData, _ := json.MarshalIndent(&auctionResult, "", " ")
+				fmt.Printf("(successfully sent) Auction Result: %s\n", auctionResultData)
+			default:
+				auctionResultData, _ := json.MarshalIndent(&auctionResult, "", " ")
+				fmt.Printf("(default block; discarded) Auction Result: %s\n", auctionResultData)
+			}
 		}
 	}
 }
