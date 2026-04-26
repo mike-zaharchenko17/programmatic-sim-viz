@@ -39,6 +39,13 @@ func RunServer() {
 
 	auctionResultChan := make(chan generator.AuctionResult)
 
+	bh := BroadcastHub{
+		SourceChannel: auctionResultChan,
+		ChannelMap:    make(map[chan generator.AuctionResult]bool),
+		mu:            sync.RWMutex{},
+	}
+
+	go bh.Run()
 	go RunPipeline(ctx, auctionResultChan)
 
 	e := echo.New()
@@ -48,7 +55,7 @@ func RunServer() {
 
 	e.Static("/", "../public")
 
-	e.GET("/ws", WsHandlerWithChannel(auctionResultChan))
+	e.GET("/ws", WsHandlerWithHub(&bh))
 
 	sc := echo.StartConfig{Address: ":1323"}
 
