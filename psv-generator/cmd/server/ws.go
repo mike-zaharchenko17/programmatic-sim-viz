@@ -1,46 +1,35 @@
 package server
 
 import (
-	"context"
+	"encoding/json"
+	"psv-generator/internal/generator"
 
 	"github.com/gorilla/websocket"
 	"github.com/labstack/echo/v5"
-	"github.com/labstack/echo/v5/middleware"
 )
 
 var (
 	upgrader = websocket.Upgrader{}
 )
 
-func hello(c *echo.Context) error {
-	ws, err := upgrader.Upgrade(c.Response(), c.Request(), nil)
+func WsHandlerWithChannel(auctionResultChan chan generator.AuctionResult) echo.HandlerFunc {
+	return func(c *echo.Context) error {
+		ws, err := upgrader.Upgrade(c.Response(), c.Request(), nil)
 
-	if err != nil {
-		return nil
-	}
-	defer ws.Close()
-
-	for {
-		// Write
-		err := ws.WriteMessage(websocket.TextMessage, []byte("Hello, Client!"))
 		if err != nil {
-			c.Logger().Error("failed to write WS message", "error", err)
+			return nil
 		}
-	}
-}
 
-func main() {
-	e := echo.New()
+		defer ws.Close()
 
-	e.Use(middleware.RequestLogger())
-	e.Use(middleware.Recover())
+		for auctionRes := range auctionResultChan {
+			data, _ := json.Marshal(auctionRes)
 
-	e.Static("/", "../public")
+			if err := ws.WriteMessage(websocket.TextMessage, data); err != nil {
+				return err
+			}
+		}
 
-	e.GET("/ws", hello)
-
-	sc := echo.StartConfig{Address: ":1323"}
-	if err := sc.Start(context.Background(), e); err != nil {
-		e.Logger.Error("failed to start server", "error", err)
+		return nil
 	}
 }
