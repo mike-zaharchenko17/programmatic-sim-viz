@@ -30,9 +30,9 @@ func BidRequestResponsePipe(ctx context.Context, bidRequestChan chan *BidRequest
 			wg.Done()
 			return
 		case x = <-bidRequestChan:
+			bidResponseChan <- generateBidResponses(x)
 			data, _ := json.MarshalIndent(&x, "", "   ")
 			fmt.Println("Received data on bidRequestChannel:\n" + string(data))
-			bidResponseChan <- generateBidResponses(x)
 		}
 	}
 }
