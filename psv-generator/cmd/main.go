@@ -1,30 +1,9 @@
 package main
 
 import (
-	"context"
-	"psv-generator/internal/generator"
-	"sync"
-	"time"
+	"psv-generator/cmd/server"
 )
 
 func main() {
-	ctx, cancel := context.WithCancel(context.Background())
-
-	bidRequestChan := make(chan *generator.BidRequest)
-	bidResponseChan := make(chan []*generator.BidResponse)
-
-	wg := sync.WaitGroup{}
-
-	wg.Add(2)
-
-	go generator.BidRequestProducer(ctx, bidRequestChan, &wg)
-	go generator.BidRequestResponsePipe(ctx, bidRequestChan, bidResponseChan, &wg)
-	go generator.BidResponseConsumer(ctx, bidResponseChan, &wg)
-
-	go func() {
-		time.Sleep(time.Second * 10)
-		cancel()
-	}()
-
-	wg.Wait()
+	server.RunServer()
 }
