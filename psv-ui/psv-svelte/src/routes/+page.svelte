@@ -8,29 +8,8 @@
 
 <script lang="ts">
     import { onMount, onDestroy } from "svelte"
-
-    type Bid = {
-        id: string,
-        impid: string,
-        price: number,
-        adomain?: string[],
-        cid?: string,
-        crid?: string,
-        w?: number,
-        h?: number,
-    }
+    import type { AuctionResult } from "$lib/types/types";
     
-    type AuctionResult = {
-        request_id: string,
-        timestamp: string,
-        winner?: Bid,
-        clearing_price: number,
-        losers?: {
-            bid: Bid,
-            loss_reason: number
-        }[]
-    }
-
     let socket : WebSocket;
     let auctionResults = $state<Array<AuctionResult>>([]);
 
