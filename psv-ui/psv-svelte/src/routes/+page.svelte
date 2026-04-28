@@ -7,28 +7,43 @@
 -->
 
 <script lang="ts">
-    import { onMount, onDestroy } from "svelte"
+    import { onDestroy } from "svelte"
     import type { AuctionResult } from "$lib/types/types";
-    
+
     let socket : WebSocket;
     let auctionResults = $state<Array<AuctionResult>>([]);
+    let socketIsOpen = $state<Boolean>(false)
 
-    onMount(() => {
+    const handleOpenSocket = () => {
         socket = new WebSocket('ws://localhost:1323/ws')
         socket.onmessage = (auctionEvent: any) => {
             const res = JSON.parse(auctionEvent.data)
             auctionResults = [...auctionResults, res]
         }
-    })
+        socketIsOpen = true
+    }
+
+    const handleCloseSocket = () => {
+        socket?.close()
+        socketIsOpen = false
+    }
 
     onDestroy(() => {
-        socket?.close()
+        handleCloseSocket()
     })
+
 </script>
 
 <div class="container">
+
+    {#if socketIsOpen}
+        <button onclick={handleCloseSocket}>Disconnect</button>
+    {:else}
+        <button onclick={handleOpenSocket}>Connect</button>
+    {/if}
+
     {#each auctionResults as ar}
-        <div class="auction-result">
+        <div class="card auction-result">
             <br>
             <p>{JSON.stringify(ar, null, 2)}</p>
         </div>
