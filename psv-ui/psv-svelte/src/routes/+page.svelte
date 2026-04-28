@@ -1,11 +1,3 @@
-<!--
-	RequestID     string       `json:"request_id"`
-	Timestamp     time.Time    `json:"timestamp"`
-	Winner        *Bid         `json:"winner,omitempty"`
-	ClearingPrice float64      `json:"clearing_price"`
-	Losers        []LossRecord `json:"losers,omitempty"`
--->
-
 <script lang="ts">
     import { onDestroy } from "svelte"
     import { createSocket } from "$lib/socket.svelte";
