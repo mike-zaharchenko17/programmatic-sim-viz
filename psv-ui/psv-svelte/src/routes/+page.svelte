@@ -1,7 +1,7 @@
 <script lang="ts">
     import { onDestroy, onMount } from "svelte"
     import { createSocket } from "$lib/socket.svelte";
-    import Sankey from "$lib/components/Sankey.svelte";
+    import Sankey from "$lib/components/sankey/Sankey.svelte";
 
     const socket = createSocket("ws://localhost:1323/ws")
 
