@@ -4,6 +4,7 @@
     import { auctionResultsToSankeyLinks, linksToNodes } from "$lib/data-processing-sankey";
     import { scaleOrdinal, schemeTableau10 } from "d3";
     import SankeyLink from "./SankeyLink.svelte";
+    import SankeyNode from "./SankeyNode.svelte";
 
     let { visibleResults } = $props()
 
@@ -67,26 +68,10 @@
         </g>
         <g class="nodes">
             {#each graph.nodes as node (node.id)}
-                <g class="node">
-                    <rect
-                        x={node.x0}
-                        y={node.y0}
-                        width={(node.x1 ?? 0) - (node.x0 ?? 0)}
-                        height={(node.y1 ?? 0) - (node.y0 ?? 0)}
-                    >
-                        <title>{node.id}: {node.value}</title>
-                    </rect>
-                    <text
-                        x={(node.x0 ?? 0) < width / 2 ? (node.x1 ?? 0) + 6 : (node.x0 ?? 0) - 6}
-                        y={((node.y0 ?? 0) + (node.y1 ?? 0)) / 2}
-                        dy="0.35em"
-                        text-anchor={(node.x0 ?? 0) / 2 ? "start" : "end"}
-                        dominant-baseline="middle"
-                        font-size="11"
-                    >
-                        {node.id}
-                    </text>
-                </g>
+                <SankeyNode
+                    node={node}
+                    width={width}
+                />
             {/each}
         </g>
     {/if}
