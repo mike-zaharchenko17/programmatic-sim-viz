@@ -3,7 +3,7 @@
     import type { InputNode, InputLink } from "$lib/types/types"
     import { auctionResultsToSankeyLinks, linksToNodes } from "$lib/data-processing-sankey";
     import { scaleOrdinal, schemeTableau10 } from "d3";
-    import SankeyNode from "./SankeyNode.svelte";
+    import SankeyLink from "./SankeyLink.svelte";
 
     let { visibleResults } = $props()
 
@@ -58,7 +58,7 @@
     {#if graph}
         <g class="links" fill="none" stroke-opacity="0.4">
             {#each graph.links as link (linkKey(link))}
-                <SankeyNode
+                <SankeyLink
                     link={link}
                     path={linkPath(link) ?? ""}
                     color={color(linkSourceId(link))}
