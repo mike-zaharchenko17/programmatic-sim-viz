@@ -19,3 +19,15 @@ export type AuctionResult = {
         loss_reason: number
     }[]
 }
+
+export type InputNode = {
+    id: string;
+}
+
+export type InputLink = {
+    source: string;
+    target: string;
+    value: number;
+}
+
+export type NestedBuckets = Record<string, Record<string, unknown[]>>

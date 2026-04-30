@@ -198,21 +198,3 @@ export function minBy<T, K extends keyof T, V extends keyof T>(
 ) : Record<string, number> {
     return minGrouped(groupBy(array, groupKey), minKey)
 }
-
-export function nestedToLinks(
-    nested: Record<string, Record<string, unknown[]>>
-) : { source: string; target: string; value: number }[] {
-    const links: { source: string; target: string; value: number }[] = [];
-
-    for (const source of Object.keys(nested)) {
-        for (const target of Object.keys(nested[source])) {
-            links.push({
-                source,
-                target,
-                value: nested[source][target].length
-            })
-        }
-    }
-
-    return links
-}
