@@ -21,7 +21,7 @@ func BidRequestProducer(ctx context.Context, bidRequestChan chan *BidRequest, wg
 	}
 }
 
-// consumer of BidRequest, producer of BidResponse- intermediate step
+// consumer of BidRequest, producer of Bid Response- intermediate step
 func BidRequestResponsePipe(ctx context.Context, bidRequestChan chan *BidRequest, bidResponseChan chan []*BidResponse, wg *sync.WaitGroup) {
 	var x *BidRequest
 	for {

@@ -15,7 +15,7 @@ type BroadcastHub struct {
 	// array of subscribed channels
 	ChannelMap map[chan generator.AuctionResult]bool
 
-	PipelineWindDownChannel chan int
+	PipelineWindDownChannel chan struct{}
 
 	idleTimer *time.Timer
 
@@ -72,7 +72,10 @@ func (hub *BroadcastHub) scheduleIdle() {
 	hub.idleTimer = time.AfterFunc(idleTimeout, func() {
 		hub.mu.RLock()
 		if len(hub.ChannelMap) == 0 {
-			hub.PipelineWindDownChannel <- 1
+			select {
+			case hub.PipelineWindDownChannel <- struct{}{}:
+			default:
+			}
 		}
 		hub.mu.RUnlock()
 	})

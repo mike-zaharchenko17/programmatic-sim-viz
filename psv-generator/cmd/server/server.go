@@ -13,7 +13,7 @@ import (
 func RunPipeline(
 	ctx context.Context,
 	auctionResultChan chan generator.AuctionResult,
-	pipelineWindDownChan chan int,
+	pipelineWindDownChan chan struct{},
 ) {
 	pipelineCtx, cancel := context.WithCancel(ctx)
 
@@ -49,7 +49,7 @@ func RunServer() {
 	}()
 
 	auctionResultChan := make(chan generator.AuctionResult)
-	pipelineWindDownChan := make(chan int, 1)
+	pipelineWindDownChan := make(chan struct{}, 1)
 
 	bh := BroadcastHub{
 		SourceChannel:           auctionResultChan,
