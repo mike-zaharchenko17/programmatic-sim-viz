@@ -2,7 +2,11 @@ package generator
 
 import "time"
 
-func simulateAuction(bidResponseArray []*BidResponse) AuctionResult {
+func simulateAuction(bidResponseArray []*BidResponse) *AuctionResult {
+	if len(bidResponseArray) == 0 {
+		return nil
+	}
+
 	var maxBid Bid = bidResponseArray[0].SeatBid[0].Bid[0]
 	var maxPrice = maxBid.Price
 
@@ -33,5 +37,5 @@ func simulateAuction(bidResponseArray []*BidResponse) AuctionResult {
 		}
 	}
 
-	return auctionResult
+	return &auctionResult
 }
