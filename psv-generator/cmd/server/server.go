@@ -10,17 +10,28 @@ import (
 	"github.com/labstack/echo/v5/middleware"
 )
 
-func RunPipeline(ctx context.Context, auctionResultChan chan generator.AuctionResult) {
+func RunPipeline(
+	ctx context.Context,
+	auctionResultChan chan generator.AuctionResult,
+	pipelineWindDownChan chan int,
+) {
+	pipelineCtx, cancel := context.WithCancel(ctx)
+
+	go func() {
+		<-pipelineWindDownChan
+		cancel()
+	}()
+
 	bidRequestChan := make(chan *generator.BidRequest)
 	bidResponseChan := make(chan []*generator.BidResponse)
 
 	wg := sync.WaitGroup{}
 
-	wg.Add(2)
+	wg.Add(3)
 
-	go generator.BidRequestProducer(ctx, bidRequestChan, &wg)
-	go generator.BidRequestResponsePipe(ctx, bidRequestChan, bidResponseChan, &wg)
-	go generator.BidResponseConsumer(ctx, bidResponseChan, auctionResultChan, &wg)
+	go generator.BidRequestProducer(pipelineCtx, bidRequestChan, &wg)
+	go generator.BidRequestResponsePipe(pipelineCtx, bidRequestChan, bidResponseChan, &wg)
+	go generator.BidResponseConsumer(pipelineCtx, bidResponseChan, auctionResultChan, &wg)
 
 	wg.Wait()
 }
@@ -38,15 +49,18 @@ func RunServer() {
 	}()
 
 	auctionResultChan := make(chan generator.AuctionResult)
+	pipelineWindDownChan := make(chan int, 1)
 
 	bh := BroadcastHub{
-		SourceChannel: auctionResultChan,
-		ChannelMap:    make(map[chan generator.AuctionResult]bool),
-		mu:            sync.RWMutex{},
+		SourceChannel:           auctionResultChan,
+		ChannelMap:              make(map[chan generator.AuctionResult]bool),
+		PipelineWindDownChannel: pipelineWindDownChan,
+		mu:                      sync.RWMutex{},
 	}
 
 	go bh.Run()
-	go RunPipeline(ctx, auctionResultChan)
+
+	go RunPipeline(ctx, auctionResultChan, pipelineWindDownChan)
 
 	e := echo.New()
 

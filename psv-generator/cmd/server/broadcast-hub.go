@@ -4,7 +4,10 @@ import (
 	"fmt"
 	"psv-generator/internal/generator"
 	"sync"
+	"time"
 )
+
+const idleTimeout = 45 * time.Second
 
 type BroadcastHub struct {
 	// master channel
@@ -12,12 +15,17 @@ type BroadcastHub struct {
 	// array of subscribed channels
 	ChannelMap map[chan generator.AuctionResult]bool
 
+	PipelineWindDownChannel chan int
+
+	idleTimer *time.Timer
+
 	mu sync.RWMutex
 }
 
 func (hub *BroadcastHub) Subscribe(clientChannel chan generator.AuctionResult) {
 	hub.mu.Lock()
 	hub.ChannelMap[clientChannel] = true
+	hub.cancelIdle()
 	hub.mu.Unlock()
 }
 
@@ -25,6 +33,9 @@ func (hub *BroadcastHub) Unsubscribe(clientChannel chan generator.AuctionResult)
 	hub.mu.Lock()
 	delete(hub.ChannelMap, clientChannel)
 	close(clientChannel)
+	if len(hub.ChannelMap) == 0 {
+		hub.scheduleIdle()
+	}
 	hub.mu.Unlock()
 }
 
@@ -46,4 +57,38 @@ func (hub *BroadcastHub) Run() {
 		}
 		hub.mu.RUnlock()
 	}
+}
+
+func (hub *BroadcastHub) scheduleIdle() {
+	if hub.idleTimer != nil {
+		if !hub.idleTimer.Stop() {
+			select {
+			case <-hub.idleTimer.C:
+			default:
+			}
+		}
+	}
+
+	hub.idleTimer = time.AfterFunc(idleTimeout, func() {
+		hub.mu.RLock()
+		if len(hub.ChannelMap) == 0 {
+			hub.PipelineWindDownChannel <- 1
+		}
+		hub.mu.RUnlock()
+	})
+}
+
+func (hub *BroadcastHub) cancelIdle() {
+	if hub.idleTimer == nil {
+		return
+	}
+
+	if !hub.idleTimer.Stop() {
+		select {
+		case <-hub.idleTimer.C:
+		default:
+		}
+	}
+
+	hub.idleTimer = nil
 }
