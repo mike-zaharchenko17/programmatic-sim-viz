@@ -5,7 +5,7 @@
 
     const socket = createSocket("ws://localhost:1323/ws")
 
-    let visibleResults = $derived(socket.auctionResults.slice(-30))
+    let visibleResults = $derived(socket.auctionResults)
 
     onMount(() => {
         socket.connect()

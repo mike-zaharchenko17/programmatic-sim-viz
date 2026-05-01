@@ -1,3 +1,5 @@
+import { Tween } from "svelte/motion"
+
 export type Bid = {
     id: string,
     impid: string,
@@ -18,6 +20,14 @@ export type AuctionResult = {
         bid: Bid,
         loss_reason: number
     }[]
+}
+
+// coordinate point tween object
+export type NodeTween = {
+    x0: Tween<number>;
+    y0: Tween<number>;
+    x1: Tween<number>;
+    y1: Tween<number>;
 }
 
 export type InputNode = {

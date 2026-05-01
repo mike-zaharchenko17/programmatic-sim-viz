@@ -1,10 +1,9 @@
 <script lang="ts">
-    import { sankey, sankeyLeft, sankeyLinkHorizontal, type SankeyGraph } from "d3-sankey";
-    import type { InputNode, InputLink } from "$lib/types/types"
+    import { sankey, sankeyLeft } from "d3-sankey";
+    import type { NodeTween, InputNode, InputLink } from "$lib/types/types"
     import { auctionResultsToSankeyLinks, linksToNodes } from "$lib/data-processing-sankey";
     import { scaleOrdinal, schemeTableau10 } from "d3";
-    import SankeyLink from "./SankeyLink.svelte";
-    import SankeyNode from "./SankeyNode.svelte";
+    import SankeyNodeTween from "./SankeyNodeTween.svelte";
 
     let { visibleResults } = $props()
 
@@ -23,6 +22,8 @@
             [0, 0],
             [width, height]
         ])
+
+    const nodeTweens = new Map<string, NodeTween>();
     
     let graph = $derived.by(() => {
         const links = auctionResultsToSankeyLinks(visibleResults)
@@ -39,40 +40,12 @@
         })
     })
 
-    const linkPath = sankeyLinkHorizontal<any, any>()
-
     const color = scaleOrdinal<string, string>(schemeTableau10)
-
-    const linkKey = (link: any) : string => {
-        const source = typeof link.source === "string" ? link.source : (link.source as InputNode).id;
-        const target = typeof link.target === "string" ? link.target : (link.target as InputNode).id;
-
-        return `${source}->${target}`;
-    }
-
-    const linkSourceId = (link: any): string =>
-        typeof link.source === "string" ? link.source : (link.source as InputNode).id
 
 </script>
 
 <svg {width} {height} role="img" aria-label="Auction Sankey">
     {#if graph}
-        <g class="links" fill="none" stroke-opacity="0.4">
-            {#each graph.links as link (linkKey(link))}
-                <SankeyLink
-                    link={link}
-                    path={linkPath(link) ?? ""}
-                    color={color(linkSourceId(link))}
-                />
-            {/each}
-        </g>
-        <g class="nodes">
-            {#each graph.nodes as node (node.id)}
-                <SankeyNode
-                    node={node}
-                    width={width}
-                />
-            {/each}
-        </g>
+        <SankeyNodeTween graph={graph} nodeTweens={nodeTweens} {width} {color} />
     {/if}
 </svg>
