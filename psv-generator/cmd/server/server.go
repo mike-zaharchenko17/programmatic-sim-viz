@@ -2,6 +2,7 @@ package server
 
 import (
 	"context"
+	"net/http"
 	"os"
 	"psv-generator/internal/generator"
 	"sync"
@@ -55,6 +56,10 @@ func RunServer() {
 	e.Static("/", "../public")
 
 	e.GET("/ws", WsHandlerWithHub(&bh))
+
+	e.GET("/health", func(c *echo.Context) error {
+		return c.String(http.StatusOK, "ok")
+	})
 
 	sc := echo.StartConfig{Address: ":1323"}
 
