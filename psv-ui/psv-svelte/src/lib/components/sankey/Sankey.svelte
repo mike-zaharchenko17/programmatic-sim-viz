@@ -49,7 +49,6 @@
     {height} 
     role="img" 
     aria-label="Auction Sankey"
-    style="outline: 1px solid red; display: block"
 >
     {#if graph}
         <SankeyNodeTween graph={graph} nodeTweens={nodeTweens} {width} {color} />
