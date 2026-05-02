@@ -50,14 +50,16 @@ func BidResponseConsumer(ctx context.Context, bidResponseChan chan []*BidRespons
 			fmt.Printf("Received data on bidResponseChannel:\n%s\n", string(data))
 
 			auctionResult := simulateAuction(resArray)
+			if auctionResult == nil {
+				// e.g. empty bid array when every seat declined to bid
+				continue
+			}
 
 			// gracefully log and discard if nothing is listening (i.e., ws not open)
 			select {
 			case auctionResultChan <- *auctionResult:
-				if auctionResult != nil {
-					auctionResultData, _ := json.MarshalIndent(&auctionResult, "", " ")
-					fmt.Printf("(successfully sent) Auction Result: %s\n", &auctionResultData)
-				}
+				auctionResultData, _ := json.MarshalIndent(auctionResult, "", " ")
+				fmt.Printf("(successfully sent) Auction Result: %s\n", auctionResultData)
 			default:
 				auctionResultData, _ := json.MarshalIndent(&auctionResult, "", " ")
 				fmt.Printf("(default block; discarded) Auction Result: %s\n", auctionResultData)
