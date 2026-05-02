@@ -71,13 +71,11 @@ func (hub *BroadcastHub) scheduleIdle() {
 
 	hub.idleTimer = time.AfterFunc(idleTimeout, func() {
 		hub.mu.RLock()
-		if len(hub.ChannelMap) == 0 {
-			select {
-			case hub.PipelineWindDownChannel <- struct{}{}:
-			default:
-			}
-		}
+		empty := len(hub.ChannelMap) == 0
 		hub.mu.RUnlock()
+		if empty {
+			hub.PipelineWindDownChannel <- struct{}{}
+		}
 	})
 }
 
