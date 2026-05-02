@@ -18,8 +18,12 @@ func RunPipeline(
 	pipelineCtx, cancel := context.WithCancel(ctx)
 
 	go func() {
-		<-pipelineWindDownChan
-		cancel()
+		select {
+		case <-ctx.Done():
+			return
+		case <-pipelineWindDownChan:
+			cancel()
+		}
 	}()
 
 	bidRequestChan := make(chan *generator.BidRequest)
