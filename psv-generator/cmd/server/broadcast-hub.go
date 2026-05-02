@@ -10,12 +10,9 @@ import (
 const idleTimeout = 45 * time.Second
 
 type BroadcastHub struct {
-	// master channel
-	SourceChannel <-chan generator.AuctionResult
+	PipelineMgr *PipelineManager
 	// array of subscribed channels
 	ChannelMap map[chan generator.AuctionResult]bool
-
-	PipelineWindDownChannel chan struct{}
 
 	idleTimer *time.Timer
 
@@ -27,6 +24,8 @@ func (hub *BroadcastHub) Subscribe(clientChannel chan generator.AuctionResult) {
 	hub.ChannelMap[clientChannel] = true
 	hub.cancelIdle()
 	hub.mu.Unlock()
+
+	hub.PipelineMgr.StartIfNeeded()
 }
 
 func (hub *BroadcastHub) Unsubscribe(clientChannel chan generator.AuctionResult) {
@@ -43,7 +42,7 @@ func (hub *BroadcastHub) Unsubscribe(clientChannel chan generator.AuctionResult)
 // subscribed clients. If send is not successful, log it
 
 func (hub *BroadcastHub) Run() {
-	for dataForBroadcast := range hub.SourceChannel {
+	for dataForBroadcast := range hub.PipelineMgr.outCh {
 		hub.mu.RLock() // "I am broadcasting nobody touch this data"
 		for clientCh, subscribed := range hub.ChannelMap {
 			if subscribed {
@@ -74,7 +73,7 @@ func (hub *BroadcastHub) scheduleIdle() {
 		empty := len(hub.ChannelMap) == 0
 		hub.mu.RUnlock()
 		if empty {
-			hub.PipelineWindDownChannel <- struct{}{}
+			hub.PipelineMgr.stopCh <- struct{}{}
 		}
 	})
 }

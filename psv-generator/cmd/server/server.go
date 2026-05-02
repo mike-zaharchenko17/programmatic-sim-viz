@@ -16,6 +16,7 @@ func RunServer() {
 	ctx, cancel := context.WithCancel(context.Background())
 
 	// gracefully handle interrupts
+
 	sigCh := make(chan os.Signal, 1)
 	go func() {
 		<-sigCh
@@ -25,16 +26,26 @@ func RunServer() {
 	auctionResultChan := make(chan generator.AuctionResult)
 	pipelineWindDownChan := make(chan struct{}, 1)
 
+	pipelineMgr := PipelineManager{
+		mu:        sync.Mutex{},
+		isRunning: false,
+		serverCtx: ctx,
+		outCh:     auctionResultChan,
+		stopCh:    pipelineWindDownChan,
+	}
+
 	bh := BroadcastHub{
-		SourceChannel:           auctionResultChan,
-		ChannelMap:              make(map[chan generator.AuctionResult]bool),
-		PipelineWindDownChannel: pipelineWindDownChan,
-		mu:                      sync.RWMutex{},
+		PipelineMgr: &pipelineMgr,
+		ChannelMap:  make(map[chan generator.AuctionResult]bool),
+		mu:          sync.RWMutex{},
 	}
 
 	go bh.Run()
 
-	go RunPipeline(ctx, auctionResultChan, pipelineWindDownChan)
+	// lazy start
+	if len(bh.ChannelMap) > 0 {
+		pipelineMgr.StartIfNeeded()
+	}
 
 	e := echo.New()
 
