@@ -7,8 +7,8 @@
 
     let { visibleResults } = $props()
 
-    const width = 900
-    const height = 500
+    const width = 1000
+    const height = 600
 
     const layout = sankey<InputNode, InputLink>()
         .nodeId(d => d.id)
@@ -44,7 +44,13 @@
 
 </script>
 
-<svg {width} {height} role="img" aria-label="Auction Sankey">
+<svg 
+    {width} 
+    {height} 
+    role="img" 
+    aria-label="Auction Sankey"
+    style="outline: 1px solid red; display: block"
+>
     {#if graph}
         <SankeyNodeTween graph={graph} nodeTweens={nodeTweens} {width} {color} />
     {/if}
