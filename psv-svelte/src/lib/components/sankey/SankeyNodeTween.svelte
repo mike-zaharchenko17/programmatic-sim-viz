@@ -148,6 +148,7 @@
           text-anchor={t.x0.current < width / 2 ? "start" : "end"}
           dominant-baseline="middle"
           font-size="11"
+          fill="#F2F0EF"
         >
           {node.id}
         </text>
