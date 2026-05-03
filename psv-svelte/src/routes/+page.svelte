@@ -23,12 +23,12 @@
                 <button type="button" class="btn preset-filled" onclick={socket.connect}>Connect</button>
             {/if}
         </div>
-        <div class="flex flex-col lg:flex-row justify-center gap-4">
-            <div class="card flex-1 min-w-0 preset-filled-surface-100-900 border border-surface-200-800 divide-surface-200-800 py-6 px-6">
+        <div class="flex flex-col lg:flex-row justify-center">
+            <div class="card rounded-none flex-1 min-w-0 preset-filled-surface-100-900 border border-surface-200-800 divide-surface-200-800 py-6 px-6">
                 <h2 class="h5 mb-2">Auction Flow</h2>
                 <Sankey visibleResults={visibleResults} />
             </div>
-            <div class="card w-full lg:w-72 shrink-0 preset-filled-surface-100-900 py-6 px-6">
+            <div class="card rounded-none w-full lg:w-72 shrink-0 preset-filled-surface-100-900 py-6 px-6 border-t border-r border-b border-surface-200-800 divide-surface-200-800">
                 <h2 class="h5 mb-2">Performance</h2>
                 <KPIController visibleResults={visibleResults} />
             </div>
