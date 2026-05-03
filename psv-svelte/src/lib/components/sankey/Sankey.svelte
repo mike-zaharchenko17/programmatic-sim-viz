@@ -40,7 +40,15 @@
         })
     })
 
-    const color = scaleOrdinal<string, string>(schemeTableau10)
+    const color = scaleOrdinal<string, string>([
+        "Lost: Outbid",
+        "Won",
+        ...schemeTableau10,
+    ], [
+        "red",
+        "green",
+        ...schemeTableau10,
+    ])
 
 </script>
 

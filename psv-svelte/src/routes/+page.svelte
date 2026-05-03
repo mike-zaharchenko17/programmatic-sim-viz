@@ -22,7 +22,7 @@
                 <button type="button" class="btn preset-filled" onclick={socket.connect}>Connect</button>
             {/if}
         </div>
-        <div class="card w-fit mx-auto bg-zinc-900 py-6 px-6">
+        <div class="card w-fit mx-auto bg-zinc-800 py-6 px-6">
             <Sankey visibleResults={visibleResults} />
         </div>
     </div>
