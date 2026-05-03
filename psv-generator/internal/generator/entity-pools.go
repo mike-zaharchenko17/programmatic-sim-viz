@@ -80,6 +80,8 @@ var Campaigns = []CampaignPool{
 	{CID: "camp-005", Seat: "seat-automaker", Adomain: "automaker.com"},
 	{CID: "camp-006", Seat: "seat-streamco", Adomain: "streamco.com"},
 	{CID: "camp-007", Seat: "seat-finserv", Adomain: "finserv.com"},
+	{CID: "camp-008", Seat: "seat-finserv", Adomain: "finserv.com"},
+	{CID: "camp-009", Seat: "seat-bigretail", Adomain: "bigretail.com"},
 }
 
 // Common bid floors
