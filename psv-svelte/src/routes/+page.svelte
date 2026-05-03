@@ -2,6 +2,7 @@
     import { onDestroy, onMount } from "svelte"
     import { createSocket } from "$lib/socket.svelte";
     import Sankey from "$lib/components/sankey/Sankey.svelte";
+    import KPIController from "$lib/components/exploratory/KPIController.svelte";
 
     const socket = createSocket("ws://localhost:1323/ws")
 
@@ -22,8 +23,15 @@
                 <button type="button" class="btn preset-filled" onclick={socket.connect}>Connect</button>
             {/if}
         </div>
-        <div class="card w-fit mx-auto bg-zinc-800 py-6 px-6">
-            <Sankey visibleResults={visibleResults} />
+        <div class="flex flex-col lg:flex-row justify-center gap-4">
+            <div class="card flex-1 min-w-0 preset-filled-surface-100-900 border border-surface-200-800 divide-surface-200-800 py-6 px-6">
+                <h2 class="h5 mb-2">Auction Flow</h2>
+                <Sankey visibleResults={visibleResults} />
+            </div>
+            <div class="card w-full lg:w-72 shrink-0 preset-filled-surface-100-900 py-6 px-6">
+                <h2 class="h5 mb-2">Performance</h2>
+                <KPIController visibleResults={visibleResults} />
+            </div>
         </div>
     </div>
 </div>    

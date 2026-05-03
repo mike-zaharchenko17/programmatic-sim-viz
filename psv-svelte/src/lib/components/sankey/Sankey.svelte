@@ -11,8 +11,8 @@
     // removes red and green from the tableau scale
     const SEAT_PALETTE_FILTERED = schemeObservable10.filter((_, i) => i !== 2 && i !== 4)
 
-    const width = 1100
-    const height = 700
+    const width = 900
+    const height = 600
 
     const layout = sankey<InputNode, InputLink>()
         .nodeId(d => d.id)
@@ -28,10 +28,10 @@
         ])
 
     const nodeTweens = new Map<string, NodeTween>();
+
+    let links = $derived(auctionResultsToSankeyLinks(visibleResults))
     
     let graph = $derived.by(() => {
-        const links = auctionResultsToSankeyLinks(visibleResults)
-
         if (links.length === 0) {
             return null
         }
@@ -115,10 +115,14 @@
 </script>
 
 <svg 
-    {width} 
-    {height} 
+    viewBox={`0 0 ${width} ${height}`}
+    preserveAspectRatio="xMidYMid meet"
     role="img" 
     aria-label="Auction Sankey"
+    style:width="100%"
+    style:height="auto"
+    style:max-width="{width}px"
+    style:display="block"
 >
     {#if graph}
         <SankeyNodeTween 
