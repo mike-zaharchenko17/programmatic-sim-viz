@@ -11,8 +11,8 @@
     // removes red and green from the tableau scale
     const SEAT_PALETTE_FILTERED = schemeObservable10.filter((_, i) => i !== 2 && i !== 4)
 
-    const width = 1000
-    const height = 600
+    const width = 1100
+    const height = 700
 
     const layout = sankey<InputNode, InputLink>()
         .nodeId(d => d.id)
@@ -63,16 +63,6 @@
         c.l = lo + t * (hi - lo);
         return c.formatHex();
     }
-
-    // const color = scaleOrdinal<string, string>([
-    //     "Lost: Outbid",
-    //     "Won",
-    //     ...schemeTableau10,
-    // ], [
-    //     "red",
-    //     "green",
-    //     ...schemeTableau10,
-    // ])
 
     let color = $derived.by(() => {
         const fallback = (_: string) => "#888";
