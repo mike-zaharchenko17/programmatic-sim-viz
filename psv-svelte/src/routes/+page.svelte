@@ -28,7 +28,7 @@
                 <h2 class="h5 mb-2">Auction Flow</h2>
                 <Sankey visibleResults={visibleResults} />
             </div>
-            <div class="card rounded-none w-full lg:w-72 shrink-0 preset-filled-surface-100-900 py-6 px-6 border-t border-r border-b border-surface-200-800 divide-surface-200-800">
+            <div class="card rounded-none border border-t-0 lg:border-t lg:border-l-0 w-full lg:w-72 shrink-0 preset-filled-surface-100-900 py-6 px-6 border-surface-200-800 divide-surface-200-800">
                 <h2 class="h5 mb-2">Performance</h2>
                 <KPIController visibleResults={visibleResults} />
             </div>
