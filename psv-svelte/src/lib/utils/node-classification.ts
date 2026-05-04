@@ -10,6 +10,6 @@ export function isOutcome(id: string) {
     return id === "Lost: Outbid" || id === "Won"
 }
 
-export function endpointId(e: string | InputNode) {
+export function nodeId(e: string | InputNode) {
     return typeof e === "string" ? e : e.id
 }

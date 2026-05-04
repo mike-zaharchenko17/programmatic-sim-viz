@@ -4,7 +4,7 @@
     import { auctionResultsToSankeyLinks, linksToNodes } from "$lib/utils/data-processing-sankey";
     import { scaleOrdinal, schemeObservable10 } from "d3";
     import { hcl } from "d3";
-    import { isCampaign, isOutcome, endpointId } from "$lib/utils/node-classification";
+    import { isCampaign, isOutcome, nodeId } from "$lib/utils/node-classification";
     import SankeyNodeTween from "./SankeyNodeTween.svelte";
 
     let { visibleResults, setScope } = $props()
@@ -62,8 +62,8 @@
         const seatToCampaigns = new Map<string, string[]>();
 
         for (const link of graph.links) {
-            const s = endpointId(link.source as any);
-            const t = endpointId(link.target as any);
+            const s = nodeId(link.source as any);
+            const t = nodeId(link.target as any);
             if (isCampaign(t) && !isOutcome(s)) {
                 seats.add(s);
                 if (!campaignToSeat.has(t)) {

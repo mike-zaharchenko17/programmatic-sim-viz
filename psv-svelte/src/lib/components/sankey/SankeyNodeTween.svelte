@@ -3,6 +3,7 @@
     import { cubicOut } from "svelte/easing";
     import { scaleOrdinal, schemeTableau10 } from "d3";
     import type { SankeyGraph } from "d3-sankey";
+    import { nodeId } from "$lib/utils/node-classification";
     import type { InputNode, InputLink, LinkTween, NodeTween, Scope } from "$lib/types/types";
 
     const defaultColor = scaleOrdinal<string, string>(schemeTableau10)
@@ -16,10 +17,6 @@
     } = $props()
 
     const linkTweens = new Map<string, LinkTween>();
-
-    function nodeId(endpoint: string | InputNode): string {
-        return typeof endpoint === "string" ? endpoint : endpoint.id;
-    }
 
     function linkKey(link: any): string {
         return `${nodeId(link.source)}->${nodeId(link.target)}`;
