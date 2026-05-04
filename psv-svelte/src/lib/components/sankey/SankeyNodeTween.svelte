@@ -82,6 +82,89 @@
         return `M${sourceX},${y0}C${midX},${y0} ${midX},${y1} ${targetX},${y1}`;
     }
 
+    let hovered = $state<string | null>(null);
+    let pendingTimer: ReturnType<typeof setTimeout> | null = null;
+
+    const HOVER_DELAY_MS = 400;
+
+    function clearPending() {
+        if (pendingTimer !== null) {
+            clearTimeout(pendingTimer);
+            pendingTimer = null;
+        } 
+    }
+
+    function scheduleHover(id: string) {
+        clearPending()
+        pendingTimer = setTimeout(() => {
+          hovered = id
+          pendingTimer = null
+        }, HOVER_DELAY_MS)
+    }
+
+    function cancelHover() {
+        clearPending();
+        hovered = null;
+    }
+
+    let adjacency = $derived.by(() => {
+        const incomingByTarget = new Map<string, any[]>();
+        const outgoingBySource = new Map<string, any[]>();
+        if (!graph) return { incomingByTarget, outgoingBySource };
+
+        for (const link of graph.links) {
+            const s = nodeId(link.source as any);
+            const t = nodeId(link.target as any);
+            if (!incomingByTarget.has(t)) incomingByTarget.set(t, []);
+            incomingByTarget.get(t)!.push(link);
+            if (!outgoingBySource.has(s)) outgoingBySource.set(s, []);
+            outgoingBySource.get(s)!.push(link);
+        }
+        return { incomingByTarget, outgoingBySource };
+    });
+
+    let related = $derived.by(() => {
+        if (!graph || !hovered) return null;
+
+        const { incomingByTarget, outgoingBySource } = adjacency;
+        const nodes = new Set<string>([hovered]);
+        const linkKeys = new Set<string>();
+
+        const walk = (
+            start: string,
+            adj: Map<string, any[]>,
+            getNext: (l: any) => string,
+        ) => {
+            const queue = [start];
+            while (queue.length) {
+                const n = queue.shift()!;
+                for (const link of adj.get(n) ?? []) {
+                    linkKeys.add(linkKey(link));
+                    const next = getNext(link);
+                    if (!nodes.has(next)) {
+                        nodes.add(next);
+                        queue.push(next);
+                    }
+                }
+            }
+        };
+
+        walk(hovered, incomingByTarget, (l) => nodeId(l.source));
+        walk(hovered, outgoingBySource, (l) => nodeId(l.target));
+
+        return { nodes, linkKeys };
+    });
+
+    function nodeOpacity(id: string): number {
+        if (!hovered) return 1;
+        return related?.nodes.has(id) ? 1 : 0.15;
+    }
+
+    function linkOpacity(link: any): number {
+        if (!hovered) return 0.55;
+        return related?.linkKeys.has(linkKey(link)) ? 0.85 : 0.05;
+    }
+
     $effect(() => {
         if (!graph) return;
         const liveNodeIds = new Set<string>();
@@ -107,10 +190,12 @@
         }
     });
 
+    $effect(() => () => clearPending())
+
 </script>
 
 {#if graph}
-  <g class="links" fill="none" stroke-opacity="0.55">
+  <g class="links" fill="none">
     {#each graph.links as link (linkKey(link))}
       {@const source = nodeTweens.get(nodeId(link.source))}
       {@const target = nodeTweens.get(nodeId(link.target))}
@@ -120,6 +205,8 @@
           d={linkPath(source.x1.current, target.x0.current, lt.y0.current, lt.y1.current)}
           stroke={color(nodeId(link.source))}
           stroke-width={Math.max(1, lt.width.current)}
+          stroke-opacity={linkOpacity(link)}
+          style:transition="stroke-opacity 150ms ease-out"
         >
           <title>{nodeId(link.source)} → {nodeId(link.target)}: {link.value}</title>
         </path>
@@ -131,7 +218,15 @@
   {#each graph.nodes as node (node.id)}
     {@const t = nodeTweens.get(node.id)}
     {#if t}
-      <g class="node">
+      <g
+        class="node"
+        opacity={nodeOpacity(node.id)}
+        style:transition="opacity 150ms ease-out"
+        style:cursor="pointer"
+        onmouseenter={() => scheduleHover(node.id)}
+        onmouseleave={cancelHover}
+        role="presentation"
+      >
         <rect
           x={t.x0.current}
           y={t.y0.current}
