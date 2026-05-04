@@ -3,7 +3,7 @@
     import { cubicOut } from "svelte/easing";
     import { scaleOrdinal, schemeTableau10 } from "d3";
     import type { SankeyGraph } from "d3-sankey";
-    import type { InputNode, InputLink } from "$lib/types/types";
+    import type { InputNode, InputLink, LinkTween, NodeTween } from "$lib/types/types";
 
     const defaultColor = scaleOrdinal<string, string>(schemeTableau10)
 
@@ -13,20 +13,6 @@
         width: number;
         color?: (value: string) => string;
     } = $props()
-
-    // coordinate point tween object
-    type NodeTween = {
-        x0: Tween<number>;
-        y0: Tween<number>;
-        x1: Tween<number>;
-        y1: Tween<number>;
-    }
-
-    type LinkTween = {
-        y0: Tween<number>;
-        y1: Tween<number>;
-        width: Tween<number>;
-    }
 
     const linkTweens = new Map<string, LinkTween>();
 
