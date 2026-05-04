@@ -2,7 +2,7 @@
     import { onDestroy, onMount } from "svelte"
     import { createSocket } from "$lib/socket.svelte";
     import Sankey from "$lib/components/sankey/Sankey.svelte";
-    import KPIController from "$lib/components/exploratory/KPIController.svelte";
+    import ExploreSkeleton from "$lib/components/exploratory/ExploreSkeleton.svelte";
 
     const socket = createSocket("ws://localhost:1323/ws")
 
@@ -28,9 +28,9 @@
                 <h2 class="h5 mb-2">Auction Flow</h2>
                 <Sankey visibleResults={visibleResults} />
             </div>
-            <div class="card rounded-none border border-t-0 lg:border-t lg:border-l-0 w-full lg:w-72 shrink-0 preset-filled-surface-100-900 py-6 px-6 border-surface-200-800 divide-surface-200-800">
+            <div class="card rounded-none border border-t-0 lg:border-t lg:border-l-0 w-full lg:w-96 shrink-0 preset-filled-surface-100-900 py-6 px-6 border-surface-200-800 divide-surface-200-800">
                 <h2 class="h5 mb-2">Performance</h2>
-                <KPIController visibleResults={visibleResults} />
+                <ExploreSkeleton resultSet={visibleResults} />
             </div>
         </div>
     </div>
