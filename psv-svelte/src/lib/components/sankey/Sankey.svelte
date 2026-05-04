@@ -100,8 +100,8 @@
         }
 
         return (id: string): string => {
-            if (id === "Won") return "green";
-            if (id === "Lost: Outbid") return "red";
+            if (id === "Won") return "#55cc54";
+            if (id === "Lost: Outbid") return "#fa594d";
             const seat = campaignToSeat.get(id);
             if (seat !== undefined) {
                 const total = seatToCampaigns.get(seat)!.length;

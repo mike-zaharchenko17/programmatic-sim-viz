@@ -1,8 +1,8 @@
 <script>
-    import KPIDefault from "./KPIDefault.svelte";
+    import Pie from "./charts/Pie.svelte";
     let { visibleResults } = $props() 
 </script>
 
 <div>
-    <KPIDefault {visibleResults} />
+    <Pie {visibleResults} />
 </div>
