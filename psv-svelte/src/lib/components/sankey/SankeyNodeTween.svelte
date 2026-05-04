@@ -3,7 +3,7 @@
     import { cubicOut } from "svelte/easing";
     import { scaleOrdinal, schemeTableau10 } from "d3";
     import type { SankeyGraph } from "d3-sankey";
-    import { nodeId } from "$lib/utils/node-classification";
+    import { isCampaign, isOutcome, nodeId } from "$lib/utils/node-classification";
     import type { InputNode, InputLink, LinkTween, NodeTween, Scope } from "$lib/types/types";
 
     const defaultColor = scaleOrdinal<string, string>(schemeTableau10)
@@ -209,6 +209,14 @@
         style:cursor="pointer"
         onmouseenter={() => scheduleHover(node.id)}
         onmouseleave={cancelHover}
+        onclick={() => {
+          if (isCampaign(node.id)) {
+            handleNodeClick({ kind: "campaign", id: node.id })
+          }
+          if (!isCampaign(node.id) && !isOutcome(node.id)) {
+            handleNodeClick({ kind: "seat", id: node.id })
+          }
+        }}
         role="presentation"
       >
         <rect
