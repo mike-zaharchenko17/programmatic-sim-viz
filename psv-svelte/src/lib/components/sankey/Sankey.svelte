@@ -121,7 +121,6 @@
     aria-label="Auction Sankey"
     style:width="100%"
     style:height="auto"
-    style:max-width="{width}px"
     style:display="block"
 >
     {#if graph}
