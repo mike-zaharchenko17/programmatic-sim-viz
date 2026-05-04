@@ -1,12 +1,13 @@
 <script lang="ts">
     import { sankey, sankeyLeft } from "d3-sankey";
     import type { NodeTween, InputNode, InputLink } from "$lib/types/types"
-    import { auctionResultsToSankeyLinks, linksToNodes } from "$lib/data-processing-sankey";
+    import { auctionResultsToSankeyLinks, linksToNodes } from "$lib/utils/data-processing-sankey";
     import { scaleOrdinal, schemeObservable10 } from "d3";
     import { hcl } from "d3";
+    import { isCampaign, isOutcome, endpointId } from "$lib/utils/node-classification";
     import SankeyNodeTween from "./SankeyNodeTween.svelte";
 
-    let { visibleResults } = $props()
+    let { visibleResults, setScope } = $props()
 
     // removes red and green from the tableau scale
     const SEAT_PALETTE_FILTERED = schemeObservable10.filter((_, i) => i !== 2 && i !== 4)
@@ -28,10 +29,10 @@
         ])
 
     const nodeTweens = new Map<string, NodeTween>();
-
-    let links = $derived(auctionResultsToSankeyLinks(visibleResults))
     
     let graph = $derived.by(() => {
+        const links =  auctionResultsToSankeyLinks(visibleResults)
+
         if (links.length === 0) {
             return null
         }
@@ -43,18 +44,6 @@
             links: links.map((d) => ({ ...d }))
         })
     })
-
-    function isCampaign(id: string) {
-        return id.startsWith("Campaign:") || id.startsWith("Creative:")
-    }
-
-    function isOutcome(id: string) {
-        return id === "Lost: Outbid" || id === "Won"
-    }
-
-    function endpointId(e: string | InputNode) {
-        return typeof e === "string" ? e : e.id
-    }
 
     function shade(seatColor: string, idx: number, total: number): string {
         const c = hcl(seatColor);
@@ -128,7 +117,8 @@
             graph={graph} 
             nodeTweens={nodeTweens} 
             width={width} 
-            color={color} 
+            color={color}
+            handleNodeClick={setScope}
         />
     {/if}
 </svg>

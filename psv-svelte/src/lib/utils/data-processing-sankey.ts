@@ -1,7 +1,7 @@
 /* uses the primitives defined in data-processing.ts to compute sankey vals */
 
-import type { InputLink, InputNode, NestedBuckets } from "./types/types";
-import type { Bid, AuctionResult } from "./types/types"
+import type { InputLink, InputNode, NestedBuckets } from "../types/types";
+import type { Bid, AuctionResult } from "../types/types"
 
 export function nestedToLinks(
     nested: NestedBuckets

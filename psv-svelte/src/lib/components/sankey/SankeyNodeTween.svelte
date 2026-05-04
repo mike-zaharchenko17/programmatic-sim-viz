@@ -3,14 +3,15 @@
     import { cubicOut } from "svelte/easing";
     import { scaleOrdinal, schemeTableau10 } from "d3";
     import type { SankeyGraph } from "d3-sankey";
-    import type { InputNode, InputLink, LinkTween, NodeTween } from "$lib/types/types";
+    import type { InputNode, InputLink, LinkTween, NodeTween, Scope } from "$lib/types/types";
 
     const defaultColor = scaleOrdinal<string, string>(schemeTableau10)
 
-    let { graph, nodeTweens, width, color = defaultColor }: {
+    let { graph, nodeTweens, width, handleNodeClick, color = defaultColor, }: {
         graph: SankeyGraph<InputNode, InputLink>;
         nodeTweens: Map<string, NodeTween>;
         width: number;
+        handleNodeClick: (v: Scope) => void;
         color?: (value: string) => string;
     } = $props()
 
