@@ -2,13 +2,13 @@
 <script lang="ts">
     import type { AuctionResult } from "$lib/types/types"
     import { pie, arc, type PieArcDatum } from "d3";
-    let { visibleResults } = $props()
-    let numAuctions = $derived(visibleResults.length)
+    let { resultSet } = $props()
+    let numAuctions = $derived(resultSet.length)
     let numWinners = $derived(
-        visibleResults.filter((res: AuctionResult) => res.winner !== undefined).length
+        resultSet.filter((res: AuctionResult) => res.winner !== undefined).length
     )
     let numLosers = $derived(
-        visibleResults.reduce(
+        resultSet.reduce(
             (acc: number, res: AuctionResult) => acc + (res.losers?.length ?? 0),
             0
         )

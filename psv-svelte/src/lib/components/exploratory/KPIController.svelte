@@ -4,5 +4,5 @@
 </script>
 
 <div>
-    <Pie {visibleResults} />
+    <Pie resultSet={visibleResults} />
 </div>
