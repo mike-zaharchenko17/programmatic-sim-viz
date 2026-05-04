@@ -21,7 +21,6 @@ export type AuctionResult = {
         loss_reason: number
     }[]
 }
-
 // coordinate point tween object
 export type NodeTween = {
     x0: Tween<number>;
@@ -44,5 +43,11 @@ export type InputLink = {
     target: string;
     value: number;
 }
+
+export type Scope =
+    | { kind: "global"}
+    | { kind: "seat"; id: string }
+    | { kind: "campaign"; id: string }
+
 
 export type NestedBuckets = Record<string, Record<string, unknown[]>>

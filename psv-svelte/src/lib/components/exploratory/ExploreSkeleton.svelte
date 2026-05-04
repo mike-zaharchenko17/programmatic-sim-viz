@@ -1,12 +1,6 @@
 <script lang="ts">
-    import type { AuctionResult } from "$lib/types/types";
+    import type { AuctionResult, Scope } from "$lib/types/types";
     import Pie from "./charts/Pie.svelte";
-
-    type Scope =
-        | { kind: "global"}
-        | { kind: "seat"; id: string }
-        | { kind: "campaign"; id: string }
-
     let { resultSet, scope = { kind: "global" } }: {
         resultSet: AuctionResult[];
         scope?: Scope;
