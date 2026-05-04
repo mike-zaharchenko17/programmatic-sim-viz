@@ -30,6 +30,11 @@ export type NodeTween = {
     y1: Tween<number>;
 }
 
+export type LinkTween = {
+    y0: Tween<number>;
+    y1: Tween<number>;
+    width: Tween<number>;
+}
 export type InputNode = {
     id: string;
 }
