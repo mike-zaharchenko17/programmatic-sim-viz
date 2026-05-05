@@ -4,6 +4,8 @@ import (
 	"context"
 	"encoding/json"
 	"fmt"
+	"math"
+	"math/rand"
 	"sync"
 	"time"
 )
@@ -16,7 +18,10 @@ func BidRequestProducer(ctx context.Context, bidRequestChan chan *BidRequest, wg
 			close(bidRequestChan)
 			return
 		case bidRequestChan <- generateBidRequest():
-			time.Sleep(time.Second)
+			delayFloat := rand.NormFloat64()*200 + 500
+			delayFloat = max(50, min(2000, delayFloat))
+			delay := int(math.Round(delayFloat))
+			time.Sleep(time.Duration(delay) * time.Millisecond)
 		}
 	}
 }
