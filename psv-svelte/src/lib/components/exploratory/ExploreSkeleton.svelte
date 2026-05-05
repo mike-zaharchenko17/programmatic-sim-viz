@@ -1,8 +1,10 @@
 <script lang="ts">
     import type { AuctionResult, Scope } from "$lib/types/types";
     import Pie from "./charts/Pie.svelte";
-    let { resultSet, scope = { kind: "global" } }: {
+    import ThroughputSparkline from "./charts/ThroughputSparkline.svelte";
+    let { resultSet, clearScope, scope = { kind: "global" } }: {
         resultSet: AuctionResult[];
+        clearScope: () => void
         scope?: Scope;
     } = $props();
     
@@ -13,11 +15,15 @@
     <header class="flex items-center justify-between">
         <h2 class="h6">{title}</h2>
         {#if scope.kind !== "global"}
-            <button class="btn btn-sm">x</button>
+            <button class="btn btn-sm" onclick={() => clearScope()}>x</button>
         {/if}
     </header>
     <section aria-label="Outcome share">
         <Pie resultSet={resultSet} scope={scope} />
+    </section>
+    <section aria-label="Throughput">
+        <h3 class="text-xs uppercase opacity-70 mb-1">Throughput</h3>
+        <ThroughputSparkline resultSet={resultSet} scope={scope} />
     </section>
 </div>
 
