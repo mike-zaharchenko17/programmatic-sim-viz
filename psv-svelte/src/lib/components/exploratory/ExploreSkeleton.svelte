@@ -2,6 +2,7 @@
     import type { AuctionResult, Scope } from "$lib/types/types";
     import Pie from "./charts/Pie.svelte";
     import ThroughputSparkline from "./charts/ThroughputSparkline.svelte";
+    import PriceHistogram from "./charts/PriceHistogram.svelte";
     let { resultSet, clearScope, scope = { kind: "global" } }: {
         resultSet: AuctionResult[];
         clearScope: () => void
@@ -20,6 +21,10 @@
     </header>
     <section aria-label="Outcome share">
         <Pie resultSet={resultSet} scope={scope} />
+    </section>
+    <section aria-label="Clearing price distribution">
+        <h3 class="text-xs uppercase opacity-70 mb-1">Clearing price</h3>
+        <PriceHistogram resultSet={resultSet} scope={scope} />
     </section>
     <section aria-label="Throughput">
         <h3 class="text-xs uppercase opacity-70 mb-1">Throughput</h3>
