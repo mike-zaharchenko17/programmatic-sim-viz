@@ -11,6 +11,7 @@
     const BIN_MS = 1000;
 
     let now = $state(Date.now());
+    
     $effect(() => {
         const id = setInterval(() => (now = Date.now()), 1000);
         return () => clearInterval(id);
