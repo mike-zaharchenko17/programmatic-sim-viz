@@ -5,18 +5,6 @@
         resultSet: AuctionResult[];
         scope?: Scope;
     } = $props();
-
-    let scopedResults = $derived.by(() => {
-        if (scope.kind === "global") return resultSet
-
-        if (scope.kind === "seat") {
-            return resultSet.filter((r: AuctionResult) => r.winner?.adomain?.[0] === scope.id)
-        }
-
-        if (scope.kind === "campaign") {
-            return resultSet.filter((r: AuctionResult) => r.winner?.cid === scope.id)
-        }
-    })
     
     let title = $derived(scope.kind === "global" ? "Global" : scope.id)
 </script>
@@ -29,7 +17,7 @@
         {/if}
     </header>
     <section aria-label="Outcome share">
-        <Pie resultSet={scopedResults} />
+        <Pie resultSet={resultSet} scope={scope} />
     </section>
 </div>
 

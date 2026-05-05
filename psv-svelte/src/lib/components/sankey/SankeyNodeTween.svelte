@@ -211,7 +211,8 @@
         onmouseleave={cancelHover}
         onclick={() => {
           if (isCampaign(node.id)) {
-            handleNodeClick({ kind: "campaign", id: node.id })
+            const id = node.id.split("Campaign:")[1]
+            handleNodeClick({ kind: "campaign", id: id})
           }
           if (!isCampaign(node.id) && !isOutcome(node.id)) {
             handleNodeClick({ kind: "seat", id: node.id })

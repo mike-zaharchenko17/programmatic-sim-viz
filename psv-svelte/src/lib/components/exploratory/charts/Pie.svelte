@@ -2,17 +2,73 @@
 <script lang="ts">
     import type { AuctionResult } from "$lib/types/types"
     import { pie, arc, type PieArcDatum } from "d3";
-    let { resultSet } = $props()
-    let numAuctions = $derived(resultSet.length)
-    let numWinners = $derived(
-        resultSet.filter((res: AuctionResult) => res.winner !== undefined).length
-    )
-    let numLosers = $derived(
-        resultSet.reduce(
-            (acc: number, res: AuctionResult) => acc + (res.losers?.length ?? 0),
-            0
-        )
-    )
+    let { resultSet, scope } = $props()
+
+    // filters
+    let { nw: numWinners, nl: numLosers, na: numAuctions } = $derived.by(() : { nw: number; nl: number, na: number } => {
+        let nw, nl, na = 0
+
+        if (scope.kind === "global") {
+            nw = resultSet.filter((res: AuctionResult) => res.winner !== undefined).length
+            nl = resultSet.reduce(
+                (acc: number, res: AuctionResult) => acc + (res.losers?.length ?? 0),
+                0
+            )
+            na = resultSet.length
+        }
+
+        if (scope.kind === "seat") {
+            nw = resultSet.filter((r: AuctionResult) => r.winner?.adomain?.[0] === scope.id).length
+            nl = resultSet.filter((r: AuctionResult) => {
+                // case won: exclude from loser count
+                if (r.winner?.adomain?.[0] === scope.id) {
+                    return false
+                }
+
+                // case didn't win: see whether appears in loser array. if so, count 
+                if (r.losers) {
+                    for (const loss of r.losers) {
+                        if (loss.bid.adomain?.[0] === scope.id) {
+                            return true
+                        }
+                    }
+                }
+                // case: neither won nor lost; didn't bid
+                return false
+            }).length
+        }
+
+        if (scope.kind === "campaign") {
+            nw = resultSet.filter((r: AuctionResult) => 
+                r.winner?.cid ? r.winner.cid === scope.id : false
+            ).length
+
+            nl = resultSet.filter((r: AuctionResult) => {
+                // case won: exclude from loser count
+                if (r.winner?.cid && r.winner.cid === scope.id) {
+                    return false
+                }
+
+                // case didn't win: see whether appears in loser array. if so, count 
+                if (r.losers) {
+                    for (const loss of r.losers) {
+                        if (loss.bid.cid && loss.bid.cid === scope.id) {
+                            return true
+                        }
+                    }
+                }
+                // case: neither won nor lost; didn't bid
+                return false
+            }).length
+        }
+
+        if (na === 0) {
+            na = nw + nl
+        }
+
+        return {nw, nl, na}
+    })
+
 
     type Slice = { label: string; value: number; color: string };
 
