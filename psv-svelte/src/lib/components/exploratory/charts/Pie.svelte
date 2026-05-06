@@ -115,8 +115,12 @@
             fill="currentColor"
             style:pointer-events="none"
         >
-            <tspan x="0" y="0" dy="-0.3em" font-size="11">Total</tspan>
-            <tspan x="0" dy="1.2em" font-size="16" font-weight="600">{countTotalBids}</tspan>
+            {#if resultSet.length > 0}
+                <tspan x="0" y="0" dy="-0.3em" font-size="11">Total</tspan>
+                <tspan x="0" dy="1.2em" font-size="16" font-weight="600">{countTotalBids}</tspan>
+            {:else}
+                <tspan class="text-xs opacity-50 italic ">No results yet</tspan>
+            {/if}
         </text>
     </g>
 </svg>
