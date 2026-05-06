@@ -8,11 +8,12 @@
 
     const defaultColor = scaleOrdinal<string, string>(schemeTableau10)
 
-    let { graph, nodeTweens, width, handleNodeClick, color = defaultColor, }: {
+    let { graph, nodeTweens, width, handleNodeClick, scope, color = defaultColor, }: {
         graph: SankeyGraph<InputNode, InputLink>;
         nodeTweens: Map<string, NodeTween>;
         width: number;
         handleNodeClick: (v: Scope) => void;
+        scope: Scope
         color?: (value: string) => string;
     } = $props()
 
@@ -66,10 +67,20 @@
         return `M${sourceX},${y0}C${midX},${y0} ${midX},${y1} ${targetX},${y1}`;
     }
 
+    let selectedNodeId = $derived.by(() : string | null => {
+      if (scope.kind === "global") return null;
+      if (scope.kind === "campaign") return `Campaign:${scope.id}`;
+      if (scope.kind === "seat") return scope.id;
+      return null;
+    })
+
     let hovered = $state<string | null>(null);
+
+    let activeId = $derived(hovered ?? selectedNodeId)
+
     let pendingTimer: ReturnType<typeof setTimeout> | null = null;
 
-    const HOVER_DELAY_MS = 400;
+    const HOVER_DELAY_MS = 500;
 
     function clearPending() {
         if (pendingTimer !== null) {
@@ -108,10 +119,10 @@
     });
 
     let related = $derived.by(() => {
-        if (!graph || !hovered) return null;
+        if (!graph || !activeId) return null;
 
         const { incomingByTarget, outgoingBySource } = adjacency;
-        const nodes = new Set<string>([hovered]);
+        const nodes = new Set<string>([activeId]);
         const linkKeys = new Set<string>();
 
         const walk = (
@@ -133,19 +144,19 @@
             }
         };
 
-        walk(hovered, incomingByTarget, (l) => nodeId(l.source));
-        walk(hovered, outgoingBySource, (l) => nodeId(l.target));
+        walk(activeId, incomingByTarget, (l) => nodeId(l.source));
+        walk(activeId, outgoingBySource, (l) => nodeId(l.target));
 
         return { nodes, linkKeys };
     });
 
     function nodeOpacity(id: string): number {
-        if (!hovered) return 1;
+        if (!activeId) return 1;
         return related?.nodes.has(id) ? 1 : 0.15;
     }
 
     function linkOpacity(link: any): number {
-        if (!hovered) return 0.55;
+        if (!activeId) return 0.55;
         return related?.linkKeys.has(linkKey(link)) ? 0.85 : 0.05;
     }
 
@@ -217,6 +228,9 @@
           if (!isCampaign(node.id) && !isOutcome(node.id)) {
             handleNodeClick({ kind: "seat", id: node.id })
           }
+
+          activeId = node.id
+
         }}
         role="presentation"
       >

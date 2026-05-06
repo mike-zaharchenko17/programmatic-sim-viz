@@ -7,7 +7,7 @@
     import { isCampaign, isOutcome, nodeId } from "$lib/utils/node-classification";
     import SankeyNodeTween from "./SankeyNodeTween.svelte";
 
-    let { visibleResults, setScope } = $props()
+    let { visibleResults, setScope, scope } = $props()
 
     // removes red and green from the tableau scale
     const SEAT_PALETTE_FILTERED = schemeObservable10.filter((_, i) => i !== 2 && i !== 4)
@@ -120,6 +120,7 @@
                 width={width} 
                 color={color}
                 handleNodeClick={setScope}
+                scope={scope}
             />
         {/if}
     </svg>

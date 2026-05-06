@@ -7,14 +7,18 @@
 
     const socket = createSocket("ws://localhost:1323/ws")
 
-    let currentScope = $state<Scope>({kind: "global"})
+    let currentScope = $state<Scope>({kind: "global", id: null})
 
     const setScope = ((newScope: Scope) => {
-        currentScope = newScope
+        if ((newScope.kind === currentScope.kind) && (newScope.id === currentScope.id)) {
+            currentScope = {kind: "global", id: null};
+            return;
+        }
+        currentScope = newScope;
     })
 
     const clearScope = () => {
-        currentScope = {kind: "global"}
+        currentScope = {kind: "global", id: null}
     }
 
     let visibleResults = $derived(socket.auctionResults)
@@ -39,6 +43,7 @@
             <Sankey 
                 visibleResults={visibleResults} 
                 setScope={setScope} 
+                scope={currentScope}
             />
           </div>
         <div class="card rounded-none border border-t-0 lg:border-t lg:border-l-0 w-full lg:w-96 shrink-0 preset-filled-surface-100-900 py-6 px-6 border-surface-200-800 divide-surface-200-800">

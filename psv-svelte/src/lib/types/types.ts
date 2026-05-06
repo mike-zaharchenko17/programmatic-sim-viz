@@ -45,7 +45,7 @@ export type InputLink = {
 }
 
 export type Scope =
-    | { kind: "global"}
+    | { kind: "global"; id: null}
     | { kind: "seat"; id: string }
     | { kind: "campaign"; id: string }
 
