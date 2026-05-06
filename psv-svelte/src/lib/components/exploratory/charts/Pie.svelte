@@ -89,7 +89,7 @@
 
 <svg
   viewBox={`0 0 ${size} ${size}`}
-  class="w-1/2 lg:w-full h-auto block mx-auto"
+  class="w-1/2 lg:w-11/12 h-auto block mx-auto"
 >
     <g transform={`translate(${radius}, ${radius})`}>
         {#each arcs as a (a.data.label)}
