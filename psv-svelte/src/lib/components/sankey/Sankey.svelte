@@ -104,26 +104,28 @@
 </script>
 
 {#if visibleResults.length > 0}
-    <svg 
-        viewBox={`0 0 ${width} ${height}`}
-        preserveAspectRatio="xMidYMid meet"
-        role="img" 
-        aria-label="Auction Sankey"
-        style:width="100%"
-        style:height="auto"
-        style:display="block"
-    >
-        {#if graph}
-            <SankeyNodeTween 
-                graph={graph} 
-                nodeTweens={nodeTweens} 
-                width={width} 
-                color={color}
-                handleNodeClick={setScope}
-                scope={scope}
-            />
-        {/if}
-    </svg>
+    <div class="flex-1 flex items-center justify-center">
+        <svg 
+            viewBox={`0 0 ${width} ${height}`}
+            preserveAspectRatio="xMidYMid meet"
+            role="img" 
+            aria-label="Auction Sankey"
+            style:width="100%"
+            style:height="auto"
+            style:display="block"
+        >
+            {#if graph}
+                <SankeyNodeTween 
+                    graph={graph} 
+                    nodeTweens={nodeTweens} 
+                    width={width} 
+                    color={color}
+                    handleNodeClick={setScope}
+                    scope={scope}
+                />
+            {/if}
+        </svg>
+    </div>
 {:else}
     <div class="flex-1 flex items-center justify-center">
         <p class="opacity-60">Waiting for data...</p>
