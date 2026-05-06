@@ -5,7 +5,7 @@
     let { resultSet, scope } = $props()
 
     // filters
-    let { nw: numWinners, nl: numLosers, na: numAuctions } = $derived.by(() : { nw: number; nl: number, na: number } => {
+    let { nw: countWinningBids, nl: countLosingBids, na: countTotalBids } = $derived.by(() : { nw: number; nl: number, na: number } => {
         let nw, nl, na = 0
 
         if (scope.kind === "global") {
@@ -14,7 +14,6 @@
                 (acc: number, res: AuctionResult) => acc + (res.losers?.length ?? 0),
                 0
             )
-            na = resultSet.length
         }
 
         if (scope.kind === "seat") {
@@ -73,8 +72,8 @@
     type Slice = { label: string; value: number; color: string };
 
     let data = $derived<Slice[]>([
-        { label: "Won",  value: numWinners, color: "#55cc54" },
-        { label: "Lost", value: numLosers,  color: "#fa594d" },
+        { label: "Won",  value: countWinningBids, color: "#55cc54" },
+        { label: "Lost", value: countLosingBids,  color: "#fa594d" },
     ])
 
     const size = 240
@@ -117,7 +116,7 @@
             style:pointer-events="none"
         >
             <tspan x="0" y="0" dy="-0.3em" font-size="11">Total</tspan>
-            <tspan x="0" dy="1.2em" font-size="16" font-weight="600">{numAuctions}</tspan>
+            <tspan x="0" dy="1.2em" font-size="16" font-weight="600">{countTotalBids}</tspan>
         </text>
     </g>
 </svg>
