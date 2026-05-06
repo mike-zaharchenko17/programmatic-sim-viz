@@ -4,10 +4,11 @@
     let { socket }: { socket: Socket } = $props()
 
     let count = $derived(socket.auctionResults.length)
+    let clearIsDisabled = $derived(count === 0)
 </script>
 
 <div
-    class="card rounded-none border border-surface-200-800 preset-filled-surface-100-900 flex items-center justify-between gap-4 px-4 py-2 w-full"
+    class="card rounded-none border border-b-0 border-surface-200-800 preset-filled-surface-100-900 flex items-center justify-between gap-4 px-4 py-2 w-full"
     role="toolbar"
     aria-label="Dashboard controls"
 >
@@ -32,6 +33,14 @@
     </div>
 
     <div class="flex items-center gap-2">
+        <button 
+            type="button" 
+            class="btn btn-sm preset-filled"
+            disabled={clearIsDisabled}
+            onclick={socket.clear}
+        >
+            Clear
+        </button>
         {#if socket.isOpen}
             <button type="button" class="btn btn-sm preset-tonal" onclick={socket.disconnect}>
                 Disconnect

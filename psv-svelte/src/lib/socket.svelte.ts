@@ -5,11 +5,13 @@ export type Socket = {
     readonly auctionResults: AuctionResult[];
     connect: () => void;
     disconnect: () => void;
+    clear: () => void;
 }
 
 export function createSocket(url: string): Socket {
     let socket : WebSocket | null = $state(null)
     let isOpen = $state(false)
+
     let auctionResults = $state<AuctionResult[]>([])
 
     function connect() {
@@ -39,10 +41,15 @@ export function createSocket(url: string): Socket {
         isOpen = false
     }
 
+    function clear() {
+        auctionResults = []
+    }
+
     return {
         get isOpen() { return isOpen },
         get auctionResults() { return auctionResults },
         connect,
-        disconnect
+        disconnect,
+        clear
     }
 }

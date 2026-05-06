@@ -31,10 +31,8 @@
 
 </script>
 
-<div class="flex flex-col gap-4 my-4">
-    <div class="flex justify-center">
-        <Toolbar {socket} />
-    </div>
+<div class="flex flex-col my-4">
+    <Toolbar {socket} />
     <div class="flex flex-col lg:flex-row justify-center">
         <div class="card rounded-none flex-1 min-w-0 preset-filled-surface-100-900 border border-surface-200-800 divide-surface-200-800 py-6 px-6 flex flex-col">
             <h2 class="h5 mb-2">Auction Flow</h2>
