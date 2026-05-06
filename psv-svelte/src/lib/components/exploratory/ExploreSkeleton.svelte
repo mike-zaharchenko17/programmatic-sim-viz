@@ -4,7 +4,7 @@
     import ThroughputSparkline from "./charts/ThroughputSparkline.svelte";
     import PriceHistogram from "./charts/PriceHistogram.svelte";
     import LossReasonBar from "./charts/LossReasonBar.svelte";
-    let { resultSet, clearScope, scope = { kind: "global" } }: {
+    let { resultSet, clearScope, scope = { kind: "global", id: null } }: {
         resultSet: AuctionResult[];
         clearScope: () => void
         scope?: Scope;
