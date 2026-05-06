@@ -4,6 +4,7 @@
     import Sankey from "$lib/components/sankey/Sankey.svelte";
     import ExploreSkeleton from "$lib/components/exploratory/ExploreSkeleton.svelte";
     import type { Scope } from "$lib/types/types";
+    import Toolbar from "./Toolbar.svelte";
 
     const socket = createSocket("ws://localhost:1323/ws")
 
@@ -17,6 +18,7 @@
         currentScope = newScope;
     })
 
+    
     const clearScope = () => {
         currentScope = {kind: "global", id: null}
     }
@@ -31,11 +33,7 @@
 
 <div class="flex flex-col gap-4 my-4">
     <div class="flex justify-center">
-        {#if socket.isOpen}
-            <button type="button" class="btn preset-filled" onclick={socket.disconnect}>Disconnect</button>
-        {:else}
-            <button type="button" class="btn preset-filled" onclick={socket.connect}>Connect</button>
-        {/if}
+        <Toolbar {socket} />
     </div>
     <div class="flex flex-col lg:flex-row justify-center">
         <div class="card rounded-none flex-1 min-w-0 preset-filled-surface-100-900 border border-surface-200-800 divide-surface-200-800 py-6 px-6 flex flex-col">

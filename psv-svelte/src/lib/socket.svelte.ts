@@ -1,7 +1,13 @@
 import type { AuctionResult } from "./types/types";
 
-export function createSocket(url: string) {
+export type Socket = {
+    readonly isOpen: boolean;
+    readonly auctionResults: AuctionResult[];
+    connect: () => void;
+    disconnect: () => void;
+}
 
+export function createSocket(url: string): Socket {
     let socket : WebSocket | null = $state(null)
     let isOpen = $state(false)
     let auctionResults = $state<AuctionResult[]>([])
@@ -38,6 +44,5 @@ export function createSocket(url: string) {
         get auctionResults() { return auctionResults },
         connect,
         disconnect
-
     }
 }
