@@ -20,20 +20,23 @@
 					D3
 				</a>
 			</span>
-			<a
-				href="https://github.com/mike-zaharchenko17/programmatic-sim-viz"
-				class="hover:opacity-80 transition-opacity"
-				target="_blank"
-				rel="noopener"
-			>
-				GitHub
-			</a>
-			<a
-				href="/about"
-				class="hover:opacity-80 transition-opacity"
-			>
-				About
-			</a>
+			<div class="flex items-center gap-4">
+				<a
+					href="https://github.com/mike-zaharchenko17/programmatic-sim-viz"
+					class="hover:opacity-80 transition-opacity"
+					target="_blank"
+					rel="noopener"
+				>
+					GitHub
+				</a>
+				<span>&middot;</span>
+				<a
+					href="/about"
+					class="hover:opacity-80 transition-opacity"
+				>
+					About
+				</a>
+			</div>
 		</div>
 	</footer>
 </div>
