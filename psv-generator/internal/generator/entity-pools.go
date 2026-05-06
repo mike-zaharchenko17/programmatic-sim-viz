@@ -147,13 +147,15 @@ func PickOne[T any](items []T) T {
 	return items[idx]
 }
 
-// log normal-ish bid price above floor
-func GenBidPrice(floor float64) float64 {
+// log normal-ish bid price
+func GenBidPrice(floor float64) (float64, bool) {
 	spread := floor * 0.5
 	if spread < 0.10 {
 		spread = 0.10
 	}
-	return floor + rand.ExpFloat64()*spread
+	// allow bids below floor to reject w/ code 100
+	generatedBidPrice := floor*0.9 + rand.ExpFloat64()*spread
+	return generatedBidPrice, generatedBidPrice < floor
 }
 
 func GenIP() string {

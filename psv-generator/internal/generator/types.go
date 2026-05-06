@@ -102,14 +102,15 @@ type SeatBid struct {
 
 // Bid represents an offer to buy an impression
 type Bid struct {
-	ID      string   `json:"id"`
-	ImpID   string   `json:"impid"`
-	Price   float64  `json:"price"`
-	Adomain []string `json:"adomain,omitempty"`
-	CID     string   `json:"cid,omitempty"`
-	CrID    string   `json:"crid,omitempty"`
-	W       *int     `json:"w,omitempty"`
-	H       *int     `json:"h,omitempty"`
+	ID           string   `json:"id"`
+	ImpID        string   `json:"impid"`
+	Price        float64  `json:"price"`
+	Adomain      []string `json:"adomain,omitempty"`
+	CID          string   `json:"cid,omitempty"`
+	CrID         string   `json:"crid,omitempty"`
+	W            *int     `json:"w,omitempty"`
+	H            *int     `json:"h,omitempty"`
+	isBelowFloor bool
 }
 
 type LossRecord struct {

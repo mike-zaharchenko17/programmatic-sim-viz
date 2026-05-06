@@ -20,19 +20,21 @@ func generateBidResponses(bidRequest *BidRequest) []*BidResponse {
 
 		// select one of the impressions on the bid request
 		imp := PickOne(bidRequest.Imp)
-		bidPrice := GenBidPrice(imp.Bidfloor)
+
+		bidPrice, isBelowFloor := GenBidPrice(imp.Bidfloor)
 
 		responses = append(responses, &BidResponse{
 			ID: bidRequest.ID,
 			SeatBid: []SeatBid{{
 				Seat: seat.Seat,
 				Bid: []Bid{{
-					ID:      GenUUID(),
-					ImpID:   imp.ID,
-					Price:   bidPrice,
-					CID:     campaign.CID,
-					CrID:    GenUUID(),
-					Adomain: []string{campaign.Adomain},
+					ID:           GenUUID(),
+					ImpID:        imp.ID,
+					Price:        bidPrice,
+					CID:          campaign.CID,
+					CrID:         GenUUID(),
+					Adomain:      []string{campaign.Adomain},
+					isBelowFloor: isBelowFloor,
 				}},
 			}},
 		})
