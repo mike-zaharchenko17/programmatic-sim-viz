@@ -2,6 +2,8 @@
 <script lang="ts">
     import type { AuctionResult } from "$lib/types/types"
     import { pie, arc, type PieArcDatum } from "d3";
+    import { Tween } from "svelte/motion";
+    import { cubicOut } from "svelte/easing";
     let { resultSet, scope } = $props()
 
     // filters
@@ -85,6 +87,28 @@
         .outerRadius(radius - 8)
 
     let arcs = $derived(pieLayout(data))
+
+    type ArcTween = {
+        startAngle: Tween<number>;
+        endAngle: Tween<number>;
+    };
+    const arcTweens = new Map<string, ArcTween>();
+
+    $effect(() => {
+        for (const a of arcs) {
+            let t = arcTweens.get(a.data.label);
+            if (!t) {
+                t = {
+                    startAngle: new Tween(a.startAngle, { duration: 300, easing: cubicOut }),
+                    endAngle: new Tween(a.endAngle, { duration: 300, easing: cubicOut }),
+                };
+                arcTweens.set(a.data.label, t);
+            } else {
+                t.startAngle.target = a.startAngle;
+                t.endAngle.target = a.endAngle;
+            }
+        }
+    });
 </script>
 
 <svg
@@ -93,20 +117,28 @@
 >
     <g transform={`translate(${radius}, ${radius})`}>
         {#each arcs as a (a.data.label)}
-            <path d={arcGen(a)} fill={a.data.color} />
-            {#if a.endAngle - a.startAngle > 0.15}
-                {@const [cx, cy] = arcGen.centroid(a)}
-                <text
-                    text-anchor="middle"
-                    dominant-baseline="middle"
-                    fill="white"
-                    font-size="12"
-                    font-weight="600"
-                    style:pointer-events="none"
-                >
-                    <tspan x={cx} y={cy} dy="-0.3em">{a.data.label}</tspan>
-                    <tspan x={cx} dy="1.2em">{a.data.value}</tspan>
-                </text>
+            {@const t = arcTweens.get(a.data.label)}
+            {#if t}
+                {@const tweened = {
+                    ...a,
+                    startAngle: t.startAngle.current,
+                    endAngle: t.endAngle.current,
+                }}
+                <path d={arcGen(tweened)} fill={a.data.color} />
+                {#if tweened.endAngle - tweened.startAngle > 0.15}
+                    {@const [cx, cy] = arcGen.centroid(tweened)}
+                    <text
+                        text-anchor="middle"
+                        dominant-baseline="middle"
+                        fill="white"
+                        font-size="12"
+                        font-weight="600"
+                        style:pointer-events="none"
+                    >
+                        <tspan x={cx} y={cy} dy="-0.3em">{a.data.label}</tspan>
+                        <tspan x={cx} dy="1.2em">{a.data.value}</tspan>
+                    </text>
+                {/if}
             {/if}
         {/each}
         <text

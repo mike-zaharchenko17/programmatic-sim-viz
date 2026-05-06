@@ -95,7 +95,14 @@
     >
         {#each segments as s (s.label)}
             {#if s.w > 0}
-                <rect x={s.x} y={0} width={s.w} height={H} fill={s.color} />
+                <rect
+                    x={s.x}
+                    y={0}
+                    width={s.w}
+                    height={H}
+                    fill={s.color}
+                    style:transition="x 250ms ease-out, width 250ms ease-out"
+                />
             {/if}
         {/each}
     </svg>
