@@ -49,5 +49,4 @@ export type Scope =
     | { kind: "seat"; id: string }
     | { kind: "campaign"; id: string }
 
-
 export type NestedBuckets = Record<string, Record<string, unknown[]>>
