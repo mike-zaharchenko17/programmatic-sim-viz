@@ -7,7 +7,7 @@ export function isCampaign(id: string) {
 }
 
 export function isOutcome(id: string) {
-    return id.startsWith("Lost:") || id === "Won"
+    return id === "Lost" || id === "Won"
 }
 
 export function nodeId(e: string | InputNode) {

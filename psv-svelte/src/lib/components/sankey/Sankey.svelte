@@ -90,7 +90,7 @@
 
         return (id: string): string => {
             if (id === "Won") return "#55cc54";
-            if (id.startsWith("Lost:")) return "#fa594d";
+            if (id === "Lost") return "#fa594d";
             const seat = campaignToSeat.get(id);
             if (seat !== undefined) {
                 const total = seatToCampaigns.get(seat)!.length;
