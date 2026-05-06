@@ -67,7 +67,13 @@ export function getOutcome(lossReason?: number): string {
         return "Won"
     }
 
-    return "Lost: Outbid"
+    if (lossReason === 2) {
+      return "Lost: Impression Expired"
+    } else if (lossReason === 100) {
+      return "Lost: Below Floor"
+    } else {
+      return "Lost: Outbid"
+    }
 }
 
 export function auctionResultsToSankeyLinks(
