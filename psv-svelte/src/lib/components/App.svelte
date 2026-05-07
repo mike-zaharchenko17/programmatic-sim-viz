@@ -1,12 +1,13 @@
 <script lang="ts">
     import { onDestroy } from "svelte"
+    import { PUBLIC_WS_URL } from "$env/static/public";
     import { createSocket } from "$lib/socket.svelte";
     import Sankey from "$lib/components/sankey/Sankey.svelte";
     import ExploreSkeleton from "$lib/components/exploratory/ExploreSkeleton.svelte";
     import type { Scope } from "$lib/types/types";
     import Toolbar from "./Toolbar.svelte";
 
-    const socket = createSocket("ws://localhost:1323/ws")
+    const socket = createSocket(PUBLIC_WS_URL)
 
     let currentScope = $state<Scope>({kind: "global", id: null})
 

@@ -15,7 +15,7 @@ export function createSocket(url: string): Socket {
     let auctionResults = $state<AuctionResult[]>([])
 
     function connect() {
-        socket = new WebSocket('ws://localhost:1323/ws')
+        socket = new WebSocket(url)
 
         socket.onopen = () => {
             isOpen = true

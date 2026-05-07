@@ -4,8 +4,10 @@ import (
 	"context"
 	"net/http"
 	"os"
+	"os/signal"
 	"psv-generator/internal/generator"
 	"sync"
+	"syscall"
 
 	"github.com/labstack/echo/v5"
 	"github.com/labstack/echo/v5/middleware"
@@ -16,9 +18,10 @@ func RunServer() {
 	// a cancel here shuts the whole thing down
 	ctx, cancel := context.WithCancel(context.Background())
 
-	// gracefully handle interrupts
+	// gracefully handle interrupts (Render sends SIGTERM on shutdown)
 
 	sigCh := make(chan os.Signal, 1)
+	signal.Notify(sigCh, syscall.SIGINT, syscall.SIGTERM)
 	go func() {
 		<-sigCh
 		cancel()
@@ -53,15 +56,17 @@ func RunServer() {
 	e.Use(middleware.RequestLogger())
 	e.Use(middleware.Recover())
 
-	e.Static("/", "../public")
-
 	e.GET("/ws", WsHandlerWithHub(&bh))
 
 	e.GET("/health", func(c *echo.Context) error {
 		return c.String(http.StatusOK, "ok")
 	})
 
-	sc := echo.StartConfig{Address: ":1323"}
+	port := os.Getenv("PORT")
+	if port == "" {
+		port = "1323"
+	}
+	sc := echo.StartConfig{Address: ":" + port}
 
 	if err := sc.Start(ctx, e); err != nil {
 		e.Logger.Error("failed to start server", "error", err)
