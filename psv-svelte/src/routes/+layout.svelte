@@ -31,10 +31,12 @@
 				</a>
 				<span>&middot;</span>
 				<a
-					href="/about"
+					href="https://www.iab.com/wp-content/uploads/2016/03/OpenRTB-API-Specification-Version-2-5-FINAL.pdf"
+					target="_blank"
+					rel="noopener"
 					class="hover:opacity-80 transition-opacity"
 				>
-					About
+					OpenRTB v2.5
 				</a>
 			</div>
 		</div>
